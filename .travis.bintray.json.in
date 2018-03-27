@@ -9,7 +9,7 @@
     "vcs_url": "https://github.com/N64-tools/mips64-gcc-toolchain.git",
     "github_use_tag_release_notes": false,
     "github_release_notes_file": "CHANGELOG.txt",
-    "licenses": [ "LGPL" ],
+    "licenses": [ "LGPL-3.0" ],
     "labels": [ "mips64", "N64", "GCC", "Toolchain" ],
     "public_download_numbers": false,
     "public_stats": false,

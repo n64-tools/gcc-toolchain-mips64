@@ -21,8 +21,10 @@ install: true
 
 
 before_script:
-# Go back to the root of the project and setup the build directory
+# Go back to the root of the project and create a changelog
 - cd $TRAVIS_BUILD_DIR
+- touch "CHANGELOG.txt"
+- git log --oneline --decorate > CHANGELOG.txt
 
 
 script:
@@ -32,9 +34,6 @@ script:
 
 after_success:
 # Upload build artifacts to azure blog storage
-- ls ./scripts/build/
-- find ~/ -type f -name "gcc-toolchain-mips64-linux64.tar.gz"
-- find ~/ -type f -name "gcc-toolchain-mips64-win64.zip"
 - npm install -g azure-cli
 - 'if [[ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_TAG == "" ]];then
   azure telemetry --disable
