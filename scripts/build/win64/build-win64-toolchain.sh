@@ -5,7 +5,8 @@ set -eu
 # tools/build-win64-toolchain.sh: Win64 toolchain build script.
 #
 # n64chain: A (free) open-source N64 development toolchain.
-# Copyright 2014-16 Tyler J. Stachecki <stachecki.tyler@gmail.com>
+# Copyright 2014-2018 Tyler J. Stachecki <stachecki.tyler@gmail.com>
+# modified for N64-TOOLS by Robin Jones
 #
 # This file is subject to the terms and conditions defined in
 # 'LICENSE', which is part of this source code package.
@@ -17,6 +18,7 @@ GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2"
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.bz2"
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.1.tar.bz2"
+NEWLIB="ftp://sourceware.org/pub/newlib/newlib-3.0.0.20180226.tar.gz"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR} && mkdir -p {stamps,tarballs}
@@ -220,6 +222,78 @@ if [ ! -f stamps/make-install ]; then
   popd
 
   touch stamps/make-install
+fi
+
+if [ ! -f stamps/newlib-download ]; then
+  wget "${NEWLIB}" -O "tarballs/$(basename ${NEWLIB})"
+  touch stamps/newlib-download
+fi
+
+if [ ! -f stamps/newlib-extract ]; then
+  mkdir -p newlib-{build,source}
+  tar -xf tarballs/$(basename ${NEWLIB}) -C newlib-source --strip 1
+  touch stamps/newlib-extract
+fi
+
+if [ ! -f stamps/newlib-configure ]; then
+  pushd newlib-build
+    CFLAGS="-O2 -fomit-frame-pointer -ffast-math -fstrict-aliasing" \
+        ../newlib-source/configure \
+        --build=x86_64-linux-gnu \
+        --host=x86_64-w64-mingw32 \
+        --disable-bootstrap \
+        --disable-build-poststage1-with-cxx \
+        --disable-build-with-cxx \
+        --disable-cloog-version-check \
+        --disable-dependency-tracking \
+        --disable-libada \
+        --disable-libquadmath \
+        --disable-libquadmath-support \
+        --disable-libssp \
+        --disable-maintainer-mode \
+        --disable-malloc-debugging \
+        --disable-multilib \
+        --disable-newlib-atexit-alloc \
+        --disable-newlib-hw-fp \
+        --disable-newlib-iconv \
+        --disable-newlib-io-float \
+        --disable-newlib-io-long-double \
+        --disable-newlib-io-long-long \
+        --disable-newlib-mb \
+        --disable-newlib-multithread \
+        --disable-newlib-register-fini \
+        --disable-newlib-supplied-syscalls \
+        --disable-objc-gc \
+        --enable-newlib-io-c99-formats \
+        --enable-newlib-io-pos-args \
+        --enable-newlib-reent-small \
+        --prefix="${SCRIPT_DIR}" \
+        --target=mips64-elf --with-arch=vr4300 \
+        --with-endian=little \
+        --with-arch=vr4300 \
+        --without-cloog \
+        --without-gmp \
+        --without-mpc \
+        --without-mpfr
+         popd
+
+  touch stamps/newlib-configure
+fi
+
+if [ ! -f stamps/newlib-build ]; then
+  pushd newlib-build
+  make --jobs=4
+  popd
+
+  touch stamps/newlib-build
+fi
+
+if [ ! -f stamps/newlib-install ]; then
+  pushd newlib-build
+  make install
+  popd
+
+  touch stamps/newlib-install
 fi
 
 #if [ ! -f stamps/checksum-build ]; then
