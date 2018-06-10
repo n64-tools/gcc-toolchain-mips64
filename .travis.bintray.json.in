@@ -19,7 +19,7 @@
   },
 
   "version": {
-    "name": "7.3.0-0.1",
+    "name": "7.3.0-0.2",
     "desc": "This is a version",
     "released": "@TIMESTAMP@",
     "vcs_tag": "0.1",
