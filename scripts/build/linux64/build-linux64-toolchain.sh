@@ -250,17 +250,17 @@ fi
 
 
 
-#if [ ! -f stamps/checksum-build ]; then
-#  cc -Wall -Wextra -pedantic -std=c99 -static -O2 ${SCRIPT_DIR}/../checksum.c -o bin/checksum
+if [ ! -f stamps/checksum-build ]; then
+  cc -Wall -Wextra -pedantic -std=c99 -static -O2 ${SCRIPT_DIR}/../checksum.c -o bin/checksum
 
-#  touch stamps/checksum-build
-#fi
+  touch stamps/checksum-build
+fi
 
-#if [ ! -f stamps/mkfs-build ]; then
-#  cc -Wall -Wextra -pedantic -std=c99 -static -O2 ${SCRIPT_DIR}/../mkfs.c -o bin/mkfs
+if [ ! -f stamps/mkfs-build ]; then
+  cc -Wall -Wextra -pedantic -std=c99 -static -O2 ${SCRIPT_DIR}/../mkfs.c -o bin/mkfs
 
-#  touch stamps/mkfs-build
-#fi
+  touch stamps/mkfs-build
+fi
 
 #if [ ! -f stamps/rspasm-build ]; then
 #  pushd "${SCRIPT_DIR}/../rspasm"

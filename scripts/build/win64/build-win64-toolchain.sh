@@ -296,17 +296,17 @@ if [ ! -f stamps/newlib-install ]; then
   touch stamps/newlib-install
 fi
 
-#if [ ! -f stamps/checksum-build ]; then
-#  x86_64-w64-mingw32-gcc -Wall -Wextra -pedantic -std=c99 -static -O2 ${SCRIPT_DIR}/../checksum.c -o bin/checksum.exe
+if [ ! -f stamps/checksum-build ]; then
+  x86_64-w64-mingw32-gcc -Wall -Wextra -pedantic -std=c99 -static -O2 ${SCRIPT_DIR}/../checksum.c -o bin/checksum.exe
 
-#  touch stamps/checksum-build
-#fi
+  touch stamps/checksum-build
+fi
 
-#if [ ! -f stamps/mkfs-build ]; then
-#  x86_64-w64-mingw32-gcc -Wall -Wextra -pedantic -std=c99 -static -O2 ${SCRIPT_DIR}/../mkfs.c -o bin/mkfs.exe
+if [ ! -f stamps/mkfs-build ]; then
+  x86_64-w64-mingw32-gcc -Wall -Wextra -pedantic -std=c99 -static -O2 ${SCRIPT_DIR}/../mkfs.c -o bin/mkfs.exe
 
-#  touch stamps/mkfs-build
-#fi
+  touch stamps/mkfs-build
+fi
 
 #if [ ! -f stamps/rspasm-build ]; then
 #  pushd "${SCRIPT_DIR}/../rspasm"
