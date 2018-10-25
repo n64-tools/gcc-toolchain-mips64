@@ -38,19 +38,19 @@ steps:
   displayName: 'Install Azure CLI'
 
 - bash: |
-    if [[ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_TAG == "" ]];then
+    if [[ $BUILD_SOURCEBRANCHNAME == "master" ]];then
     azure telemetry --disable
 
     azure storage blob upload -q -a $AZURE_STORAGE_ACCOUNT -k $AZURE_STORAGE_ACCESS_KEY 
-    $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz binaries "$TRAVIS_REPO_SLUG/gcc-toolchain-mips64-linux64.tar.gz";
+    $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz binaries "$BUILD_STAGINGDIRECTORY/gcc-toolchain-mips64-linux64.tar.gz";
 
     azure storage blob upload -q -a $AZURE_STORAGE_ACCOUNT -k $AZURE_STORAGE_ACCESS_KEY
-    $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip binaries "$TRAVIS_REPO_SLUG/gcc-toolchain-mips64-win64.zip";
+    $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip binaries "$BUILD_STAGINGDIRECTORY/gcc-toolchain-mips64-win64.zip";
     fi
   displayName: 'Upload build artifacts to Azure blog storage'
 
-- script: |
-    cd $(Build.SourcesDirectory)
+- bash: |
+    cd $BUILD_SOURCESDIRECTORY
     sed -e s%@TIMESTAMP@%"`ruby -e 'require "time"; print Time::parse(\`git log --format="%cd" -n 1\`.chomp).strftime("%Y-%m-%dT%H:%M:%SZ")'`"% .travis.bintray.json.in > .travis.bintray.json
   displayName: 'Setup the deploy file'
 
