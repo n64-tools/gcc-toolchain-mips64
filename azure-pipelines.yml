@@ -23,7 +23,7 @@ steps:
   displayName: 'Install Required Packages'
 
 - script: |
-    cd $TRAVIS_BUILD_DIR
+    cd $Build.SourcesDirectory
     touch "CHANGELOG.txt"
     git log --oneline --decorate > CHANGELOG.txt
   displayName: 'Create Changelog'
