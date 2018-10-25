@@ -29,7 +29,6 @@ rm -rf ./*-build
 rm -rf ./stamps
 rm -rf ./x86_64-w64-mingw32
 rm ./build-win64-toolchain.sh
-rm ./gcc-win64-enable-plugins.patch
 
 echo "Compressing files for upload..."
 cd ${WORKDIR}/scripts/build/
