@@ -34,7 +34,7 @@ steps:
 
 # After Success
 - script: npm install -g azure-cli
-    displayName: 'Install Azure CLI'
+  displayName: 'Install Azure CLI'
 
 - bash: |
     if [[ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_TAG == "" ]];then
