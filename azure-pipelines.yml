@@ -3,7 +3,6 @@ pool:
 
 steps:
 - script: |
-    echo Getting the latest GCC version:
     sudo add-apt-repository ppa:jonathonf/gcc -y
     sudo apt-get -qq update
   displayName: 'Before Install'
@@ -31,6 +30,7 @@ steps:
   - script: |
     bash ./travis-build.sh
   displayName: 'Build the project'
+  continueOnError: false
 
 # After Success
   - script: npm install -g azure-cli
