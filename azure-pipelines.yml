@@ -12,29 +12,29 @@ steps:
     sudo apt-get install gcc-8 g++-8 -y
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-8
     sudo update-alternatives --config gcc
-  displayName: 'Install GCC 8.1'
+  displayName: 'Update Distribution and install GCC 8.1'
 
   #- script: |
     #sudo add-apt-repository ppa:jonathonf/gcc -y
     #sudo apt-get -qq update
   #displayName: 'Updating Distro'
 
-  #- script: |
+- script: |
     #sudo apt-get install -y build-essential software-properties-common
     #sudo apt-get install -y gcc-8
-  #  sudo apt-get install -y mingw-w64 libgmp-dev bison
-  #  sudo apt-get install -y libmpfr-dev libmpc-dev
-  #  sudo apt-get install -y byacc texinfo
-  #  sudo apt-get install -y zip gzip tar
-  #displayName: 'Install Required Packages'
+    sudo apt-get install -y mingw-w64 libgmp-dev bison
+    sudo apt-get install -y libmpfr-dev libmpc-dev
+    sudo apt-get install -y byacc texinfo
+    sudo apt-get install -y zip gzip tar
+  displayName: 'Install Required Packages'
 
-#  - script: |
-#    cd $TRAVIS_BUILD_DIR
-#    touch "CHANGELOG.txt"
-#    git log --oneline --decorate > CHANGELOG.txt
-#  displayName: 'Create Changelog'
+- script: |
+    cd $TRAVIS_BUILD_DIR
+    touch "CHANGELOG.txt"
+    git log --oneline --decorate > CHANGELOG.txt
+  displayName: 'Create Changelog'
 
-#  - script: |
+#- script: |
 #    bash ./travis-build.sh
 #  displayName: 'Build the project'
 #  continueOnError: false
