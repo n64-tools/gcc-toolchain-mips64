@@ -40,7 +40,7 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(Build.SourcesDirectory)/scripts/build/' 
-    artifactName: 'gcc-toolchain-mips64-linux64' 
+    artifactName: 'binaries' 
     publishLocation: 'Container' # Options: container, filePath
     #targetPath: # Required when publishLocation == FilePath
     parallel: true # Optional
