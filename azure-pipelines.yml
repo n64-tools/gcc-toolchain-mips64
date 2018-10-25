@@ -29,7 +29,7 @@ steps:
   displayName: 'Create Changelog'
 
 - script: |
-    bash ./travis-build.sh
+    bash ./build.sh
   displayName: 'Build Project'
   continueOnError: false
 
