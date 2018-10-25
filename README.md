@@ -4,7 +4,8 @@ This repo automatically generates the MIPS64 toolchain to allow cross compilatio
 The binaries can be downloaded as part of other build scripts which saves time (at least 30 minutes) setting up a developer environment in order to build N64 libraries such as libdragon.
 
 *Download Link*
-[![Build Status](https://travis-ci.org/N64-tools/mips64-gcc-toolchain.svg?branch=master)](https://travis-ci.org/N64-tools/mips64-gcc-toolchain) [ ![Download](https://api.bintray.com/packages/n64-tools/mips64-gcc-toolchain/binaries/images/download.svg) ](https://bintray.com/n64-tools/mips64-gcc-toolchain/binaries/_latestVersion) 
+[![Build Status](https://dev.azure.com/n64-tools/N64-Tools/_apis/build/status/N64-tools.mips64-gcc-toolchain)](https://dev.azure.com/n64-tools/N64-Tools/_build/latest?definitionId=1)
+[ ![Download](https://api.bintray.com/packages/n64-tools/mips64-gcc-toolchain/binaries/images/download.svg) ](https://bintray.com/n64-tools/mips64-gcc-toolchain/binaries/_latestVersion) 
 
 <!---
 Architecture | Mirror Links
