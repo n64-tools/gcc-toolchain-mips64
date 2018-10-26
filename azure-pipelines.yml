@@ -31,8 +31,8 @@ steps:
   continueOnError: false
 
 - bash: |
-    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz $BUILD_ARTIFACTSTAGINGDIRECTORY
-    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip $BUILD_ARTIFACTSTAGINGDIRECTORY
+    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64
+    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip $BUILD_ARTIFACTSTAGINGDIRECTORY/win64
   displayName: 'Get Artifacts'
   continueOnError: false
 
@@ -51,10 +51,10 @@ steps:
   displayName: Universal Publish Linux Package
   inputs:
     command: publish
-    publishDirectory: '$(Build.ArtifactStagingDirectory)/gcc-toolchain-mips64-linux64.tar.gz'
+    publishDirectory: '$(Build.ArtifactStagingDirectory)/linux64'
     vstsFeedPublish: 'Releases'
     vstsFeedPackagePublish: 'gcc-toolchain-mips64-linux64'
-    packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows and Linux'
+    packagePublishDescription: 'GCC toolchain for the N64 compatible with Linux'
     #versionOption: custom
     #versionPublish: <Package version>
 
@@ -62,10 +62,10 @@ steps:
   displayName: Universal Publish Windows Package
   inputs:
     command: publish
-    publishDirectory: '$(Build.ArtifactStagingDirectory)/gcc-toolchain-mips64-win64.zip'
+    publishDirectory: '$(Build.ArtifactStagingDirectory)/win64'
     vstsFeedPublish: 'Releases'
     vstsFeedPackagePublish: 'gcc-toolchain-mips64-win64'
-    packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows and Linux'
+    packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows'
     #versionOption: custom
     #versionPublish: <Package version>
 
@@ -79,9 +79,9 @@ steps:
       $webClient = New-Object System.Net.WebClient
       $webClient.Credentials = new-object System.Net.NetworkCredential($env:USER, $env:KEY)
       Write-Host "Uploading Linux Package."
-      $webClient.UploadFile("$bintrayUrl/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-linux64.tar.gz")
+      $webClient.UploadFile("$bintrayUrl/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/gcc-toolchain-mips64-linux64.tar.gz")
       Write-Host "Uploading Windows Package."
-      $webClient.UploadFile("$bintrayUrl/gcc-toolchain-mips64-win64.zip;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-win64.zip")
+      $webClient.UploadFile("$bintrayUrl/gcc-toolchain-mips64-win64.zip;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/win64/gcc-toolchain-mips64-win64.zip")
     }
     catch [Exception]
     {
