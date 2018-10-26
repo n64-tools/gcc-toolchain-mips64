@@ -1,7 +1,7 @@
 pool:
   vmImage: 'Ubuntu 16.04'
 
-# steps:
+steps:
 # - script: |
 #     sudo add-apt-repository ppa:jonathonf/gcc -y
 #     sudo apt-get -qq update
