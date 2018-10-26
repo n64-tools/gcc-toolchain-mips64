@@ -68,11 +68,11 @@ steps:
     try
     {
       Write-Host "Test Version- $env:BUILD_BUILDNUMBER"
-      Write-Host "Test User- $env:BinTrayUser"
+      Write-Host "Test User- $env:BINTRAYUSER"
       $webClient = New-Object System.Net.WebClient
-      $webClient.Credentials = new-object System.Net.NetworkCredential($env:BinTrayUser, $env:BinTrayKey)
-      $webClient.UploadFile("https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/$env:BUILD_DEFINITIONNAME/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-linux64.tar.gz")
-      $webClient.UploadFile("https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/$env:BUILD_DEFINITIONNAME/gcc-toolchain-mips64-win64.zip;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-win64.zip")
+      $webClient.Credentials = new-object System.Net.NetworkCredential($env:BINTRAYUSER, $env:BINTRAYKEY)
+      $webClient.UploadFile("https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$env:BUILD_BUILDNUMBER/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-linux64.tar.gz")
+      $webClient.UploadFile("https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$env:BUILD_BUILDNUMBER/gcc-toolchain-mips64-win64.zip;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-win64.zip")
     }
     catch
     {
