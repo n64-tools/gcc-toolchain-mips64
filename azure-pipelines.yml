@@ -54,12 +54,23 @@ steps:
 
 #TODO: should only publish to feed when on master branch!!!
 - task: UniversalPackages@0
-  displayName: Universal Publish
+  displayName: Universal Publish Linux Package
   inputs:
     command: publish
     publishDirectory: '$(Build.ArtifactStagingDirectory)'
     vstsFeedPublish: 'Releases'
-    vstsFeedPackagePublish: 'gcc-toolchain-mips64'
+    vstsFeedPackagePublish: 'gcc-toolchain-mips64-linux64/gcc-toolchain-mips64-linux64.tar.gz'
+    packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows and Linux'
+    #versionOption: custom
+    #versionPublish: <Package version>
+
+  - task: UniversalPackages@0
+  displayName: Universal Publish Windows Package
+  inputs:
+    command: publish
+    publishDirectory: '$(Build.ArtifactStagingDirectory)/gcc-toolchain-mips64-win64.zip'
+    vstsFeedPublish: 'Releases'
+    vstsFeedPackagePublish: 'gcc-toolchain-mips64-win64'
     packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows and Linux'
     #versionOption: custom
     #versionPublish: <Package version>
