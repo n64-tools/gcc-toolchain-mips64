@@ -64,7 +64,7 @@ steps:
     #versionOption: custom
     #versionPublish: <Package version>
 
-  - task: UniversalPackages@0
+- task: UniversalPackages@0
   displayName: Universal Publish Windows Package
   inputs:
     command: publish
