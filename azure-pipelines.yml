@@ -37,10 +37,10 @@ steps:
   continueOnError: false
 
 - bash: |
-  mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz $BUILD_ARTIFACTSTAGINGDIRECTORY
-  mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip $BUILD_ARTIFACTSTAGINGDIRECTORY
-displayName: 'Get Artifacts'
-continueOnError: false
+    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz $BUILD_ARTIFACTSTAGINGDIRECTORY
+    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip $BUILD_ARTIFACTSTAGINGDIRECTORY
+  displayName: 'Get Artifacts'
+  continueOnError: false
 
 # Publish build artifacts to Azure Artifacts/TFS or a file share
 - task: PublishBuildArtifacts@1
