@@ -68,15 +68,15 @@ steps:
     try
     {
       $bintrayUrl = "https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$env:BUILD_BUILDNUMBER"
-      Write-Host "URL- $(bintrayUrl)"
+      Write-Host "URL- $bintrayUrl"
       
       [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
       $webClient = New-Object System.Net.WebClient
-      $webClient.Credentials = new-object System.Net.NetworkCredential($(user), $(key))
+      $webClient.Credentials = new-object System.Net.NetworkCredential($user, $key)
       Write-Host "Uploading Linux Package."
-      $webClient.UploadFile("$(bintrayUrl)/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-linux64.tar.gz")
+      $webClient.UploadFile("$bintrayUrl/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-linux64.tar.gz")
       Write-Host "Uploading Windows Package."
-      $webClient.UploadFile("$(bintrayUrl)/gcc-toolchain-mips64-win64.zip;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-win64.zip")
+      $webClient.UploadFile("$bintrayUrl/gcc-toolchain-mips64-win64.zip;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-win64.zip")
     }
     catch [Exception]
     {
