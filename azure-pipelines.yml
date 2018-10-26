@@ -3,7 +3,6 @@ pool:
 
 steps:
 - script: |
-    echo Getting the latest GCC version:
     sudo add-apt-repository ppa:jonathonf/gcc -y
     sudo apt-get -qq update
   displayName: 'Add GCC 8.1 Repository'
@@ -30,6 +29,7 @@ steps:
     touch "CHANGELOG.txt"
     git log --oneline --decorate > CHANGELOG.txt
   displayName: 'Create Changelog'
+  continueOnError: false
 
 - script: |
     bash ./build.sh
@@ -51,3 +51,15 @@ steps:
     #targetPath: # Required when publishLocation == FilePath
     parallel: true # Optional
     #parallelCount: # Optional
+
+#TODO: should only publish to feed when on master branch!!!
+- task: UniversalPackages@0
+  displayName: Universal Publish
+  inputs:
+    command: publish
+    publishDirectory: '$(Build.ArtifactStagingDirectory)'
+    vstsFeedPublish: 'Releases'
+    vstsFeedPackagePublish: 'gcc-toolchain-mips64'
+    packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows and Linux'
+    #versionOption: custom
+    #versionPublish: <Package version>
