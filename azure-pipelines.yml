@@ -67,8 +67,8 @@ steps:
 - powershell: |
     try
     {
-      Write-Host "Test Version- $env:BUILD_DEFINITIONNAME"
-      Write-Host "Test Version- $env:BinTrayUser"
+      Write-Host "Test Version- $(Date:yyyyMMdd).$(Rev:.r)"
+      Write-Host "Test User- $env:BinTrayUser"
       $webClient = New-Object System.Net.WebClient
       $webClient.Credentials = new-object System.Net.NetworkCredential($env:BinTrayUser, $env:BinTrayKey)
       $webClient.UploadFile("https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/$env:BUILD_DEFINITIONNAME/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$(Build.ArtifactStagingDirectory)/gcc-toolchain-mips64-linux64.tar.gz")
