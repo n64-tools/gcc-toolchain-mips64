@@ -57,9 +57,9 @@ steps:
   displayName: Universal Publish Linux Package
   inputs:
     command: publish
-    publishDirectory: '$(Build.ArtifactStagingDirectory)'
+    publishDirectory: '$(Build.ArtifactStagingDirectory)/gcc-toolchain-mips64-linux64.tar.gz'
     vstsFeedPublish: 'Releases'
-    vstsFeedPackagePublish: 'gcc-toolchain-mips64-linux64/gcc-toolchain-mips64-linux64.tar.gz'
+    vstsFeedPackagePublish: 'gcc-toolchain-mips64-linux64'
     packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows and Linux'
     #versionOption: custom
     #versionPublish: <Package version>
