@@ -63,3 +63,18 @@ steps:
     packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows and Linux'
     #versionOption: custom
     #versionPublish: <Package version>
+
+- powershell: |
+    try
+    {
+      $webClient = New-Object System.Net.WebClient
+      $webClient.Credentials = new-object System.Net.NetworkCredential("n64-tools", $env:BinTrayKey)
+      $webClient.UploadFile("https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/$(Date:yyyyMMdd).$(Rev:.r)/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$(Build.ArtifactStagingDirectory)/gcc-toolchain-mips64-linux64.tar.gz")
+      $webClient.UploadFile("https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/$(Date:yyyyMMdd).$(Rev:.r)/gcc-toolchain-mips64-win64.zip;publish=1", "PUT", "$(Build.ArtifactStagingDirectory)/gcc-toolchain-mips64-win64.zip")
+    }
+    catch
+    {
+      echo "Failed to upload package."
+    }
+  displayName: 'Upload to Bintray'
+  continueOnError: false
