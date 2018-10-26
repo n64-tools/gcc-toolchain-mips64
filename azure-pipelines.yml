@@ -1,75 +1,77 @@
 pool:
   vmImage: 'Ubuntu 16.04'
 
-steps:
-- script: |
-    sudo add-apt-repository ppa:jonathonf/gcc -y
-    sudo apt-get -qq update
-  displayName: 'Add GCC 8.1 Repository'
-  continueOnError: false
+# steps:
+# - script: |
+#     sudo add-apt-repository ppa:jonathonf/gcc -y
+#     sudo apt-get -qq update
+#   displayName: 'Add GCC 8.1 Repository'
+#   continueOnError: false
 
-- script: |
-    sudo add-apt-repository ppa:jonathonf/gcc -y
-    sudo apt-get -qq update
-  displayName: 'Update Distro'
-  continueOnError: false
+# - script: |
+#     sudo add-apt-repository ppa:jonathonf/gcc -y
+#     sudo apt-get -qq update
+#   displayName: 'Update Distro'
+#   continueOnError: false
 
-- script: |
-    sudo apt-get install -y build-essential software-properties-common
-    sudo apt-get install -y gcc-8
-    sudo apt-get install -y mingw-w64 libgmp-dev bison
-    sudo apt-get install -y libmpfr-dev libmpc-dev
-    sudo apt-get install -y byacc texinfo
-    sudo apt-get install -y zip gzip tar
-  displayName: 'Install Required Packages'
-  continueOnError: false
+# - script: |
+#     sudo apt-get install -y build-essential software-properties-common
+#     sudo apt-get install -y gcc-8
+#     sudo apt-get install -y mingw-w64 libgmp-dev bison
+#     sudo apt-get install -y libmpfr-dev libmpc-dev
+#     sudo apt-get install -y byacc texinfo
+#     sudo apt-get install -y zip gzip tar
+#   displayName: 'Install Required Packages'
+#   continueOnError: false
 
-- bash: |
-    cd $BUILD_SOURCESDIRECTORY
-    touch "CHANGELOG.txt"
-    git log --oneline --decorate > CHANGELOG.txt
-  displayName: 'Create Changelog'
-  continueOnError: false
+# - bash: |
+#     cd $BUILD_SOURCESDIRECTORY
+#     touch "CHANGELOG.txt"
+#     git log --oneline --decorate > CHANGELOG.txt
+#   displayName: 'Create Changelog'
+#   continueOnError: false
 
-- script: |
-    bash ./build.sh
-  displayName: 'Build Project'
-  continueOnError: false
+# - script: |
+#     bash ./build.sh
+#   displayName: 'Build Project'
+#   continueOnError: false
 
-- bash: |
-    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz $BUILD_ARTIFACTSTAGINGDIRECTORY
-    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip $BUILD_ARTIFACTSTAGINGDIRECTORY
-  displayName: 'Get Artifacts'
-  continueOnError: false
+# - bash: |
+#     mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz $BUILD_ARTIFACTSTAGINGDIRECTORY
+#     mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip $BUILD_ARTIFACTSTAGINGDIRECTORY
+#   displayName: 'Get Artifacts'
+#   continueOnError: false
 
-# Publish build artifacts to Azure Artifacts/TFS or a file share
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: 'binaries' 
-    publishLocation: 'Container' # Options: container, filePath
-    #targetPath: # Required when publishLocation == FilePath
-    parallel: true # Optional
-    #parallelCount: # Optional
+# # Publish build artifacts to Azure Artifacts/TFS or a file share
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#     artifactName: 'binaries' 
+#     publishLocation: 'Container' # Options: container, filePath
+#     #targetPath: # Required when publishLocation == FilePath
+#     parallel: true # Optional
+#     #parallelCount: # Optional
 
-#TODO: should only publish to feed when on master branch!!!
-- task: UniversalPackages@0
-  displayName: Universal Publish
-  inputs:
-    command: publish
-    publishDirectory: '$(Build.ArtifactStagingDirectory)'
-    vstsFeedPublish: 'Releases'
-    vstsFeedPackagePublish: 'gcc-toolchain-mips64'
-    packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows and Linux'
-    #versionOption: custom
-    #versionPublish: <Package version>
+# #TODO: should only publish to feed when on master branch!!!
+# - task: UniversalPackages@0
+#   displayName: Universal Publish
+#   inputs:
+#     command: publish
+#     publishDirectory: '$(Build.ArtifactStagingDirectory)'
+#     vstsFeedPublish: 'Releases'
+#     vstsFeedPackagePublish: 'gcc-toolchain-mips64'
+#     packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows and Linux'
+#     #versionOption: custom
+#     #versionPublish: <Package version>
 
 - powershell: |
     try
     {
       $webClient = New-Object System.Net.WebClient
       $webClient.Credentials = new-object System.Net.NetworkCredential($env:BINTRAYUSER, $env:BINTRAYKEY)
+      Write-Host "Uploading Linux Package."
       $webClient.UploadFile("https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$env:BUILD_BUILDNUMBER/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-linux64.tar.gz")
+      Write-Host "Uploading Windows Package."
       $webClient.UploadFile("https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$env:BUILD_BUILDNUMBER/gcc-toolchain-mips64-win64.zip;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-win64.zip")
     }
     catch [Exception]
