@@ -72,7 +72,7 @@ steps:
       
       [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
       $webClient = New-Object System.Net.WebClient
-      $webClient.Credentials = new-object System.Net.NetworkCredential($(user), $(key))
+      $webClient.Credentials = new-object System.Net.NetworkCredential($env:USER, $env:KEY)
       Write-Host "Uploading Linux Package."
       $webClient.UploadFile("$bintrayUrl/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/gcc-toolchain-mips64-linux64.tar.gz")
       Write-Host "Uploading Windows Package."
@@ -85,7 +85,7 @@ steps:
       write-host $_.Exception.Message;
     }
   env:
-    user: $(BinTrayUser)
-    key: $(BinTrayKey)
+    USER: $(BinTrayUser)
+    KEY: $(BinTrayKey)
   displayName: 'Upload to Bintray'
   continueOnError: false
