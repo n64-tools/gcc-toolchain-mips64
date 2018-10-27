@@ -31,8 +31,8 @@ steps:
   continueOnError: false
 
 - bash: |
-    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64
-    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip $BUILD_ARTIFACTSTAGINGDIRECTORY/win64
+    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/
+    mv $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/
   displayName: 'Get Artifacts'
   continueOnError: false
 
@@ -51,7 +51,7 @@ steps:
   displayName: Universal Publish Linux Package
   inputs:
     command: publish
-    publishDirectory: '$(Build.ArtifactStagingDirectory)/linux64'
+    publishDirectory: '$(Build.ArtifactStagingDirectory)/linux64/'
     vstsFeedPublish: 'Releases'
     vstsFeedPackagePublish: 'gcc-toolchain-mips64-linux64'
     packagePublishDescription: 'GCC toolchain for the N64 compatible with Linux'
@@ -62,7 +62,7 @@ steps:
   displayName: Universal Publish Windows Package
   inputs:
     command: publish
-    publishDirectory: '$(Build.ArtifactStagingDirectory)/win64'
+    publishDirectory: '$(Build.ArtifactStagingDirectory)/win64/'
     vstsFeedPublish: 'Releases'
     vstsFeedPackagePublish: 'gcc-toolchain-mips64-win64'
     packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows'
