@@ -3,7 +3,6 @@ pool:
 
 steps:
 - script: |
-    echo "$BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/"
     sudo add-apt-repository ppa:jonathonf/gcc -y
     sudo apt-get -qq update
   displayName: 'Add GCC 8.1 Repository'
@@ -32,8 +31,10 @@ steps:
   continueOnError: false
 
 - bash: |
-    mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/gcc-toolchain-mips64-linux64.tar.gz"
-    mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip" "$BUILD_ARTIFACTSTAGINGDIRECTORY/win64/gcc-toolchain-mips64-win64.zip"
+    mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/
+    mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/"
+    mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/
+    mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip" "$BUILD_ARTIFACTSTAGINGDIRECTORY/win64/"
   displayName: 'Get Artifacts'
   continueOnError: false
 
