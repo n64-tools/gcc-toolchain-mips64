@@ -71,28 +71,8 @@ steps:
     #versionOption: custom
     #versionPublish: <Package version>
 
-- powershell: |
-    try
-    {
-      $bintrayUrl = "https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$env:BUILD_BUILDNUMBER"
-      Write-Host "URL- $bintrayUrl"
-      
-      [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
-      $webClient = New-Object System.Net.WebClient
-      $webClient.Credentials = new-object System.Net.NetworkCredential($env:USER, $env:KEY)
-      Write-Host "Uploading Linux Package."
-      $webClient.UploadFile("$bintrayUrl/gcc-toolchain-mips64-linux64.tar.gz;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/gcc-toolchain-mips64-linux64.tar.gz")
-      Write-Host "Uploading Windows Package."
-      $webClient.UploadFile("$bintrayUrl/gcc-toolchain-mips64-win64.zip;publish=1", "PUT", "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/win64/gcc-toolchain-mips64-win64.zip")
-    }
-    catch [Exception]
-    {
-      Write-Host "Failed to upload packages."
-      write-host $_.Exception.GetType().FullName; 
-      write-host $_.Exception.Message;
-    }
-  env:
-    USER: $(BinTrayUser)
-    KEY: $(BinTrayKey)
+- bash: |
+    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/gcc-toolchain-mips64-linux64.tar.gz -u$BINTRAYUSER:$BINTRAYKEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-linux64.tar.gz;publish=1;
+    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/gcc-toolchain-mips64-win64.zip -u$BINTRAYUSER:$BINTRAYKEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-win64.zip;publish=1;
   displayName: 'Upload to Bintray'
   continueOnError: false
