@@ -1,0 +1,85 @@
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+steps:
+- script: |
+    sudo add-apt-repository ppa:jonathonf/gcc -y
+    sudo apt-get -qq update
+  displayName: 'Add GCC 8.1 Repository'
+  continueOnError: false
+
+- script: |
+    sudo apt-get install -y build-essential software-properties-common
+    sudo apt-get install -y gcc-8
+    sudo apt-get install -y mingw-w64 libgmp-dev bison
+    sudo apt-get install -y libmpfr-dev libmpc-dev
+    sudo apt-get install -y byacc texinfo
+    sudo apt-get install -y zip gzip tar
+  displayName: 'Install Required Packages'
+  continueOnError: false
+
+- bash: |
+    cd $BUILD_SOURCESDIRECTORY
+    touch "CHANGELOG.txt"
+    git log --oneline --decorate > CHANGELOG.txt
+  displayName: 'Create Changelog'
+  continueOnError: false
+
+- script: |
+    bash ./build.sh
+  displayName: 'Build Project'
+  continueOnError: false
+
+- bash: |
+    mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/
+    mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/"
+    mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/
+    mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip" "$BUILD_ARTIFACTSTAGINGDIRECTORY/win64/"
+  displayName: 'Move Artifacts to Staging Directory'
+  continueOnError: false
+
+# Publish build artifacts to Azure Artifacts/TFS or a file share
+- task: PublishBuildArtifacts@1
+  displayName: Publish Build Artifacts
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'binaries' 
+    publishLocation: 'Container' # Options: container, filePath
+    #targetPath: # Required when publishLocation == FilePath
+    parallel: true # Optional
+    #parallelCount: # Optional
+
+#TODO: should only publish to feed when on master branch!!!
+- task: UniversalPackages@0
+  displayName: Universal Publish Linux Package
+  inputs:
+    command: publish
+    publishDirectory: '$(Build.ArtifactStagingDirectory)/linux64/'
+    vstsFeedPublish: 'Releases'
+    vstsFeedPackagePublish: 'gcc-toolchain-mips64-linux64'
+    packagePublishDescription: 'GCC toolchain for the N64 compatible with Linux'
+    #versionOption: custom
+    #versionPublish: <Package version>
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: UniversalPackages@0
+  displayName: Universal Publish Windows Package
+  inputs:
+    command: publish
+    publishDirectory: '$(Build.ArtifactStagingDirectory)/win64/'
+    vstsFeedPublish: 'Releases'
+    vstsFeedPackagePublish: 'gcc-toolchain-mips64-win64'
+    packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows'
+    #versionOption: custom
+    #versionPublish: <Package version>
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- bash: |
+    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/gcc-toolchain-mips64-linux64.tar.gz -u$USER:$KEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-linux64-8.1.0-$BUILD_BUILDNUMBER.tar.gz;publish=1;
+    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/gcc-toolchain-mips64-win64.zip -u$USER:$KEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-win64-8.1.0-$BUILD_BUILDNUMBER.zip;publish=1;
+  env:
+    USER: $(BinTrayUser)
+    KEY: $(BinTrayKey)
+  displayName: 'Upload to Bintray'
+  continueOnError: false
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
