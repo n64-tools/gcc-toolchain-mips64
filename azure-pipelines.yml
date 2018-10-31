@@ -72,7 +72,10 @@ steps:
     #versionPublish: <Package version>
 
 - bash: |
-    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/gcc-toolchain-mips64-linux64.tar.gz -u$BINTRAYUSER:$BINTRAYKEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-linux64.tar.gz;publish=1;
-    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/gcc-toolchain-mips64-win64.zip -u$BINTRAYUSER:$BINTRAYKEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-win64.zip;publish=1;
+    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/gcc-toolchain-mips64-linux64.tar.gz -u$USER:$KEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-linux64.tar.gz;publish=1;
+    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/gcc-toolchain-mips64-win64.zip -u$USER:$KEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-win64.zip;publish=1;
+  env:
+    USER: $(BinTrayUser)
+    KEY: $(BinTrayKey)
   displayName: 'Upload to Bintray'
   continueOnError: false
