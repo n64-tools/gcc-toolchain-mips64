@@ -36,5 +36,4 @@ tar -czf ../gcc-toolchain-mips64-linux64.tar.gz *
 cd ${WORKDIR}/scripts/build/win64
 zip -rq ../gcc-toolchain-mips64-win64.zip *
 
-
 echo "The build completed successfully."
