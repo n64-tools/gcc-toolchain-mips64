@@ -31,9 +31,10 @@ rm -rf ./x86_64-w64-mingw32
 rm ./build-win64-toolchain.sh
 
 echo "Compressing files for upload..."
-cd ${WORKDIR}/scripts/build/
-tar -czf gcc-toolchain-mips64-linux64.tar.gz ./linux64/*
-zip -rq gcc-toolchain-mips64-win64.zip ./win64/*
+cd ${WORKDIR}/scripts/build/linux64
+tar -czf ../gcc-toolchain-mips64-linux64.tar.gz *
+cd ${WORKDIR}/scripts/build/win64
+zip -rq ../gcc-toolchain-mips64-win64.zip *
 
 
 echo "The build completed successfully."
