@@ -13,7 +13,7 @@ set -eu
 #
 
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.31.1.tar.bz2"
-GCC="https://ftp.gnu.org/gnu/gcc/gcc-8.1.0/gcc-8.1.0.tar.gz"
+GCC="https://ftp.gnu.org/gnu/gcc/gcc-8.2.0/gcc-8.2.0.tar.gz"
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.bz2"
 NEWLIB="ftp://sourceware.org/pub/newlib/newlib-3.0.0.20180226.tar.gz"
 

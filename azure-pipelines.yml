@@ -5,7 +5,7 @@ steps:
 - script: |
     sudo add-apt-repository ppa:jonathonf/gcc -y
     sudo apt-get -qq update
-  displayName: 'Add GCC 8.1 Repository'
+  displayName: 'Add GCC 8.2 Repository'
   continueOnError: false
 
 - script: |
@@ -75,8 +75,8 @@ steps:
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - bash: |
-    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/gcc-toolchain-mips64-linux64.tar.gz -u$USER:$KEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-linux64-8.1.0-$BUILD_BUILDNUMBER.tar.gz;publish=1;
-    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/gcc-toolchain-mips64-win64.zip -u$USER:$KEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-win64-8.1.0-$BUILD_BUILDNUMBER.zip;publish=1;
+    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/gcc-toolchain-mips64-linux64.tar.gz -u$USER:$KEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-linux64-8.2.0-$BUILD_BUILDNUMBER.tar.gz;publish=1;
+    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/gcc-toolchain-mips64-win64.zip -u$USER:$KEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.1.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-win64-8.2.0-$BUILD_BUILDNUMBER.zip;publish=1;
   env:
     USER: $(BinTrayUser)
     KEY: $(BinTrayKey)
