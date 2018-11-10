@@ -248,27 +248,6 @@ if [ ! -f stamps/newlib-install ]; then
   touch stamps/newlib-install
 fi
 
-
-
-if [ ! -f stamps/checksum-build ]; then
-  cc -Wall -Wextra -pedantic -std=c99 -O2 ${SCRIPT_DIR}/../checksum.c -o bin/checksum
-
-  touch stamps/checksum-build
-fi
-
-if [ ! -f stamps/mkfs-build ]; then
-  cc -Wall -Wextra -pedantic -std=c99 -O2 ${SCRIPT_DIR}/../mkfs.c -o bin/mkfs
-
-  touch stamps/mkfs-build
-fi
-
-#if [ ! -f stamps/rspasm-build ]; then
-#  pushd "${SCRIPT_DIR}/../rspasm"
-
-#  make clean && make all
-#  cp rspasm ${SCRIPT_DIR}/bin
-#fi
-
 rm -rf "${SCRIPT_DIR}"/../tools/tarballs
 rm -rf "${SCRIPT_DIR}"/../tools/*-source
 rm -rf "${SCRIPT_DIR}"/../tools/*-build
