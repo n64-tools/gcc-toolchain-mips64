@@ -125,7 +125,7 @@ if [ ! -f stamps/gcc-configure ]; then
     --host=x86_64-w64-mingw32 \
     --prefix="${SCRIPT_DIR}" \
     --target=mips64-elf --with-arch=vr4300 \
-    --enable-languages=c --without-headers --with-newlib \
+    --enable-languages=c,c++ --without-headers --with-newlib \
     --with-gnu-as=${SCRIPT_DIR}/bin/mips64-elf-as.exe \
     --with-gnu-ld=${SCRIPT_DIR}/bin/mips64-elf-ld.exe \
     --enable-checking=release \
