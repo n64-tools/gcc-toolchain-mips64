@@ -9,4 +9,4 @@ The binaries can be downloaded as part of other build scripts which saves time (
 Architecture | Download Links
 --- | --- 
 Windows x64 | [Latest](https://n64tools.blob.core.windows.net/binaries/N64-tools/mips64-gcc-toolchain/master/latest/gcc-toolchain-mips64-win64.zip)
-Linux x64 | [Latest](https://n64tools.blob.core.windows.net/binaries/N64-tools/mips64-gcc-toolchain/master/latest/gcc-toolchain-mips64-linux64.zip)
+Linux x64 | [Latest](https://n64tools.blob.core.windows.net/binaries/N64-tools/mips64-gcc-toolchain/master/latest/gcc-toolchain-mips64-linux64.tar.gz)
