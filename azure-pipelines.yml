@@ -5,7 +5,7 @@ steps:
 - script: |
     sudo add-apt-repository ppa:jonathonf/gcc -y
     sudo apt-get -qq update
-  displayName: 'Add GCC 8.2 Repository'
+  displayName: 'Add GCC Repository'
   continueOnError: false
 
 - script: |
@@ -49,37 +49,14 @@ steps:
     parallel: true # Optional
     #parallelCount: # Optional
 
-#TODO: should only publish to feed when on master branch!!!
-- task: UniversalPackages@0
-  displayName: Universal Publish Linux Package
-  inputs:
-    command: publish
-    publishDirectory: '$(Build.ArtifactStagingDirectory)/linux64/'
-    vstsFeedPublish: 'Releases'
-    vstsFeedPackagePublish: 'gcc-toolchain-mips64-linux64'
-    packagePublishDescription: 'GCC toolchain for the N64 compatible with Linux'
-    #versionOption: custom
-    #versionPublish: <Package version>
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-
-- task: UniversalPackages@0
-  displayName: Universal Publish Windows Package
-  inputs:
-    command: publish
-    publishDirectory: '$(Build.ArtifactStagingDirectory)/win64/'
-    vstsFeedPublish: 'Releases'
-    vstsFeedPackagePublish: 'gcc-toolchain-mips64-win64'
-    packagePublishDescription: 'GCC toolchain for the N64 compatible with Windows'
-    #versionOption: custom
-    #versionPublish: <Package version>
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-
-- bash: |
-    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/gcc-toolchain-mips64-linux64.tar.gz -u$USER:$KEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.2.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-linux64-8.2.0-$BUILD_BUILDNUMBER.tar.gz;publish=1;
-    curl -X PUT -T $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/gcc-toolchain-mips64-win64.zip -u$USER:$KEY https://api.bintray.com/content/n64-tools/mips64-gcc-toolchain/binaries/8.2.0-$BUILD_BUILDNUMBER/gcc-toolchain-mips64-win64-8.2.0-$BUILD_BUILDNUMBER.zip;publish=1;
-  env:
-    USER: $(BinTrayUser)
-    KEY: $(BinTrayKey)
-  displayName: 'Upload to Bintray'
-  continueOnError: false
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+- task: AzureFileCopy@3
+    inputs:
+      sourcePath: '$(Build.ArtifactStagingDirectory)\*.v64'
+      azureSubscription: 'MsdnAzureServiceRole'
+      Destination: 'AzureBlob'
+      storage: 'n64tools'
+      ContainerName: 'binaries'
+      blobPrefix: 'N64-tools/mips64-gcc-toolchain/latest/'
+      outputStorageUri: 'outputStorageUri'
+    displayName: Upload program to Blob storage
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
