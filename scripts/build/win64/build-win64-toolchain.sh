@@ -191,7 +191,7 @@ fi
 
 if [ ! -f stamps/make-patch ]; then
   pushd make-source
-  patch -p1 -i ../make-*.patch
+  patch -p1 -i ../../make-*.patch
   popd
   touch stamps/make-patch
 fi
