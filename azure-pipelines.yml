@@ -50,13 +50,13 @@ steps:
     #parallelCount: # Optional
 
 - task: AzureFileCopy@3
-    inputs:
-      sourcePath: '$(Build.ArtifactStagingDirectory)\*.v64'
-      azureSubscription: 'MsdnAzureServiceRole'
-      Destination: 'AzureBlob'
-      storage: 'n64tools'
-      ContainerName: 'binaries'
-      blobPrefix: 'N64-tools/mips64-gcc-toolchain/latest/'
-      outputStorageUri: 'outputStorageUri'
-    displayName: Upload program to Blob storage
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  inputs:
+    sourcePath: '$(Build.ArtifactStagingDirectory)\*.v64'
+    azureSubscription: 'MsdnAzureServiceRole'
+    Destination: 'AzureBlob'
+    storage: 'n64tools'
+    ContainerName: 'binaries'
+    blobPrefix: 'N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/'
+    outputStorageUri: 'outputStorageUri'
+  displayName: Upload program to Blob storage
+  #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
