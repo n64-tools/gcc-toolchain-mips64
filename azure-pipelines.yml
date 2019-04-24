@@ -49,14 +49,28 @@ steps:
     parallel: true # Optional
     #parallelCount: # Optional
 
-- task: AzureFileCopy@3
-  inputs:
-    sourcePath: '$(Build.ArtifactStagingDirectory)\*.v64'
-    azureSubscription: 'MsdnAzureServiceRole'
-    Destination: 'AzureBlob'
-    storage: 'n64tools'
-    ContainerName: 'binaries'
-    blobPrefix: 'N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/'
-    outputStorageUri: 'outputStorageUri'
-  displayName: Upload program to Blob storage
+#- task: AzureFileCopy@3
+#  inputs:
+#    sourcePath: '$(Build.ArtifactStagingDirectory)\*.zip'
+#    azureSubscription: 'MsdnAzureServiceRole'
+#    Destination: 'AzureBlob'
+#    storage: 'n64tools'
+#    ContainerName: 'binaries'
+#    blobPrefix: 'N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/'
+#    outputStorageUri: 'outputStorageUri'
+#  displayName: Upload program to Blob storage
   #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+  - task: AzureCLI@1
+    inputs:
+      connectedServiceNameARM: 'MsdnAzureServiceRole'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'AzCopy /Source:$(Build.ArtifactStagingDirectory) /Dest:https://n64tools.blob.core.windows.net/N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/ /Pattern:"gcc-toolchain-mips64-linux64.tar.gz"'
+    displayName: Upload linux binary to Blob storage
+
+  - task: AzureCLI@1
+    inputs:
+      connectedServiceNameARM: 'MsdnAzureServiceRole'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'AzCopy /Source:$(Build.ArtifactStagingDirectory) /Dest:https://n64tools.blob.core.windows.net/N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/ /Pattern:"gcc-toolchain-mips64-win64.zip"'
+    displayName: Upload windows binary to Blob storage
