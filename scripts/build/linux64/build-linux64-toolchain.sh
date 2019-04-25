@@ -15,7 +15,8 @@ set -eu
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.bz2"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-8.3.0/gcc-8.3.0.tar.gz"
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.bz2"
-NEWLIB="ftp://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz"
+NEWLIB="https://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz"
+GDB="https://ftp.gnu.org/gnu/gdb/gdb-7.7.tar.gz" # using older version until it is verified working
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR} && mkdir -p {stamps,tarballs}
@@ -229,7 +230,6 @@ if [ ! -f stamps/newlib-configure ]; then
         --prefix="${SCRIPT_DIR}" \
         --target=mips64-elf --with-arch=vr4300 \
         --with-endian=little \
-        --with-arch=vr4300 \
         --without-cloog \
         --without-gmp \
         --without-mpc \
@@ -253,6 +253,45 @@ if [ ! -f stamps/newlib-install ]; then
   popd
 
   touch stamps/newlib-install
+fi
+
+if [ ! -f stamps/gdb-download ]; then
+  wget "${GDB}" -O "tarballs/$(basename ${GDB})"
+  touch stamps/gdb-download
+fi
+
+if [ ! -f stamps/gdb-extract ]; then
+  mkdir -p gdb-{build,source}
+  tar -xf tarballs/$(basename ${GDB}) -C gdb-source --strip 1
+  touch stamps/gdb-extract
+fi
+
+if [ ! -f stamps/gdb-configure ]; then
+  pushd gdb-build
+    CFLAGS="" LDFLAGS="" \
+        ../gdb-source/configure \
+        --disable-werror \
+        --prefix="${SCRIPT_DIR}" \
+        --target=mips64-elf --with-arch=vr4300
+         popd
+
+  touch stamps/gdb-configure
+fi
+
+if [ ! -f stamps/gdb-build ]; then
+  pushd gdb-build
+  make --jobs=4
+  popd
+
+  touch stamps/gdb-build
+fi
+
+if [ ! -f stamps/gdb-install ]; then
+  pushd gdb-build
+  make install
+  popd
+
+  touch stamps/gdb-install
 fi
 
 rm -rf "${SCRIPT_DIR}"/../tools/tarballs

@@ -55,12 +55,12 @@ steps:
     connectedServiceNameARM: 'MsdnAzureServiceRole'
     scriptLocation: 'inlineScript'
     inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/linux64/gcc-toolchain-mips64-linux64.tar.gz -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-linux64.tar.gz'
-  displayName: Upload linux binary to Blob storage
+  displayName: Upload linux binary to blob storage
 
 - task: AzureCLI@1
   inputs:
     connectedServiceNameARM: 'MsdnAzureServiceRole'
     scriptLocation: 'inlineScript'
     inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/win64/gcc-toolchain-mips64-win64.zip -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-win64.zip'
-  displayName: Upload windows binary to Blob storage
+  displayName: Upload windows binary to blob storage
   
