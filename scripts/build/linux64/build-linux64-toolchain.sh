@@ -272,7 +272,7 @@ if [ ! -f stamps/gdb-configure ]; then
         ../gdb-source/configure \
         --disable-werror \
         --prefix="${SCRIPT_DIR}" \
-        --target=mips64-elf #--with-arch=vr4300
+        --target=mips64-elf --with-arch=vr4300
          popd
 
   touch stamps/gdb-configure

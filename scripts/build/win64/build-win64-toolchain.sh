@@ -315,7 +315,7 @@ if [ ! -f stamps/gdb-configure ]; then
         ../gdb-source/configure \
         --disable-werror \
         --prefix="${SCRIPT_DIR}" \
-        --target=mips64-elf #--with-arch=vr4300
+        --target=mips64-elf --with-arch=vr4300
          popd
 
   touch stamps/gdb-configure
@@ -332,6 +332,11 @@ fi
 if [ ! -f stamps/gdb-install ]; then
   pushd gdb-build
   make install
+  popd
+
+  # While not necessary, this is still a good idea.
+  pushd "${SCRIPT_DIR}/bin"
+  cp mips64-elf-{gdb,gdb-add-index,run}.exe
   popd
 
   touch stamps/gdb-install
