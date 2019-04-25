@@ -18,7 +18,7 @@ GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.bz2"
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.bz2"
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.2.tar.bz2"
-NEWLIB="ftp://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz"
+NEWLIB="https://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz"
 GDB="https://ftp.gnu.org/gnu/gdb/gdb-7.7.tar.gz" # using older version until it is verified working
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
