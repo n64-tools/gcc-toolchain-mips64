@@ -16,7 +16,7 @@ BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.bz2"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-8.3.0/gcc-8.3.0.tar.gz"
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.bz2"
 NEWLIB="https://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz"
-GDB="https://ftp.gnu.org/gnu/gdb/gdb-7.7.tar.gz" # using older version until it is verified working
+GDB="https://ftp.gnu.org/gnu/gdb/gdb-8.2.1.tar.gz"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR} && mkdir -p {stamps,tarballs}
@@ -272,7 +272,7 @@ if [ ! -f stamps/gdb-configure ]; then
         ../gdb-source/configure \
         --disable-werror \
         --prefix="${SCRIPT_DIR}" \
-        --target=mips64-elf --with-arch=vr4300
+        --target=mips64-elf #--with-arch=vr4300
          popd
 
   touch stamps/gdb-configure
