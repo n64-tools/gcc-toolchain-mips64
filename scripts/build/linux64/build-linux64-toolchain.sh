@@ -140,6 +140,22 @@ if [ ! -f stamps/gcc-install ]; then
   touch stamps/gcc-install
 fi
 
+if [ ! -f stamps/libgcc-build ]; then
+  pushd gcc-build
+  make --jobs=4 all-target-libgcc
+  popd
+
+  touch stamps/libgcc-build
+fi
+
+if [ ! -f stamps/libgcc-install ]; then
+  pushd gcc-build
+  make install-target-libgcc
+  popd
+
+  touch stamps/libgcc-install
+fi
+
 if [ ! -f stamps/make-download ]; then
   wget "${MAKE}" -O "tarballs/$(basename ${MAKE})"
   touch stamps/make-download

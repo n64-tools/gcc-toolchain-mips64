@@ -227,6 +227,22 @@ if [ ! -f stamps/make-install ]; then
   touch stamps/make-install
 fi
 
+if [ ! -f stamps/libgcc-build ]; then
+  pushd gcc-build
+  make --jobs=4 all-target-libgcc
+  popd
+
+  touch stamps/libgcc-build
+fi
+
+if [ ! -f stamps/libgcc-install ]; then
+  pushd gcc-build
+  make install-target-libgcc
+  popd
+
+  touch stamps/libgcc-install
+fi
+
 if [ ! -f stamps/newlib-download ]; then
   wget "${NEWLIB}" -O "tarballs/$(basename ${NEWLIB})"
   touch stamps/newlib-download
