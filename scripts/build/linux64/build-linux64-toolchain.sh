@@ -14,7 +14,7 @@ set -eu
 
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.33.1.tar.bz2"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-9.2.0/gcc-9.2.0.tar.gz"
-MAKE="https://ftp.gnu.org/gnu/make/make-4.3.tar.bz2"
+MAKE="https://ftp.gnu.org/gnu/make/make-4.3.tar.gz"
 NEWLIB="https://sourceware.org/pub/newlib/newlib-3.3.0.tar.gz"
 GDB="https://ftp.gnu.org/gnu/gdb/gdb-8.3.1.tar.gz"
 
