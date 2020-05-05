@@ -16,7 +16,7 @@ BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.34.tar.bz2"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-9.3.0/gcc-9.3.0.tar.gz"
 MAKE="https://ftp.gnu.org/gnu/make/make-4.3.tar.gz"
 NEWLIB="https://sourceware.org/pub/newlib/newlib-3.3.0.tar.gz"
-GDB="https://ftp.gnu.org/gnu/gdb/gdb-8.3.1.tar.gz"
+GDB="https://ftp.gnu.org/gnu/gdb/gdb-9.1.tar.gz"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR} && mkdir -p {stamps,tarballs}
