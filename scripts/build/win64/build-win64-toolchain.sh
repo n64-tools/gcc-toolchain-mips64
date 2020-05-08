@@ -13,7 +13,7 @@ set -eu
 #
 
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.34.tar.bz2"
-GCC="https://ftp.gnu.org/gnu/gcc/gcc-9.3.0/gcc-9.3.0.tar.gz"
+GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.1.0/gcc-10.1.0.tar.gz"
 GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.bz2"
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz"
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz"
