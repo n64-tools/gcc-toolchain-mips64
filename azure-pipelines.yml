@@ -2,6 +2,22 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+
+# Updating the python version available on the linux agent
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    architecture: 'x64'
+
+# Updating pip to latest
+- script: python -m pip install --upgrade pip
+  displayName: 'Upgrade pip'
+
+# Updating to latest Azure CLI version.
+- script: pip install --pre azure-cli --extra-index-url https://azurecliprod.blob.core.windows.net/edge
+  displayName: 'upgrade azure cli'
+
+
 - script: |
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
     sudo apt-get -qq update
@@ -9,7 +25,6 @@ steps:
   continueOnError: false
 
 - script: |
-    sudo npm install -g azure-cli
     sudo apt-get install -y build-essential software-properties-common
     sudo apt-get install -y gcc-10
     sudo apt-get install -y g++-10 mingw-w64 libgmp-dev bison
@@ -50,16 +65,19 @@ steps:
     parallel: true # Optional
     #parallelCount: # Optional
 
-- task: AzureCLI@1
+
+- task: AzureCLI@2
   inputs:
-    connectedServiceNameARM: 'MsdnAzureServiceRole'
-    scriptLocation: 'inlineScript'
+    azureSubscription: 'MsdnAzureServiceRole'
+    scriptType: ps
+    scriptLocation: inlineScript
     inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/linux64/gcc-toolchain-mips64-linux64.tar.gz -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-linux64.tar.gz'
   displayName: Upload linux binary to blob storage
-
-- task: AzureCLI@1
+      
+- task: AzureCLI@2
   inputs:
-    connectedServiceNameARM: 'MsdnAzureServiceRole'
+    azureSubscription: 'MsdnAzureServiceRole'
+    scriptType: ps
     scriptLocation: 'inlineScript'
     inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/win64/gcc-toolchain-mips64-win64.zip -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-win64.zip'
   displayName: Upload windows binary to blob storage
