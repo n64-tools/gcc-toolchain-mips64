@@ -15,7 +15,7 @@ set -eu
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.34.tar.bz2"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.1.0/gcc-10.1.0.tar.gz"
 GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.bz2"
-MAKE="https://ftp.gnu.org/gnu/make/make-4.3.tar.gz"
+MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz"
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.2.tar.bz2"
 NEWLIB="https://sourceware.org/pub/newlib/newlib-3.3.0.tar.gz"
@@ -188,6 +188,13 @@ if [ ! -f stamps/make-extract ]; then
   mkdir -p make-{build,source}
   tar -xf tarballs/$(basename ${MAKE}) -C make-source --strip 1
   touch stamps/make-extract
+fi
+
+if [ ! -f stamps/make-patch ]; then
+  pushd make-source
+  patch -p1 -i ../make-*.patch
+  popd
+  touch stamps/make-patch
 fi
 
 if [ ! -f stamps/make-configure ]; then
