@@ -42,21 +42,20 @@ steps:
   continueOnError: false
 
 - script: |
-    bash ./build.sh
-  displayName: 'Build Project'
+    cd $BUILD_SOURCESDIRECTORY/scripts/build/linux64
+    bash ./build-linux64-toolchain.sh
+  displayName: 'Build linux64 Project'
   continueOnError: false
 
 - bash: |
     mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/
     mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/"
-    mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/
-    mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip" "$BUILD_ARTIFACTSTAGINGDIRECTORY/win64/"
-  displayName: 'Move Artifacts to Staging Directory'
+  displayName: 'Move linux Artifacts to Staging Directory'
   continueOnError: false
 
 # Publish build artifacts to Azure Artifacts/TFS or a file share
 - task: PublishBuildArtifacts@1
-  displayName: Publish Build Artifacts
+  displayName: Publish linux Build Artifacts
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'binaries' 
@@ -69,15 +68,39 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'MsdnAzureServiceRole'
-    scriptType: ps
+    scriptType: bash/pscore
     scriptLocation: inlineScript
     inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/linux64/gcc-toolchain-mips64-linux64.tar.gz -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-linux64.tar.gz'
   displayName: Upload linux binary to blob storage
+  
+
+- script: |
+    cd $BUILD_SOURCESDIRECTORY/scripts/build/win64
+    bash ./build-win64-toolchain.sh
+  displayName: 'Build win64 Project'
+  continueOnError: false
+
+- bash: |
+    mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/win64/
+    mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip" "$BUILD_ARTIFACTSTAGINGDIRECTORY/win64/"
+  displayName: 'Move windows Artifacts to Staging Directory'
+  continueOnError: false
+
+# Publish build artifacts to Azure Artifacts/TFS or a file share
+- task: PublishBuildArtifacts@1
+  displayName: Publish windows Build Artifacts
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'binaries' 
+    publishLocation: 'Container' # Options: container, filePath
+    #targetPath: # Required when publishLocation == FilePath
+    parallel: true # Optional
+    #parallelCount: # Optional
       
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'MsdnAzureServiceRole'
-    scriptType: ps
+    scriptType: bash/pscore
     scriptLocation: 'inlineScript'
     inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/win64/gcc-toolchain-mips64-win64.zip -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-win64.zip'
   displayName: Upload windows binary to blob storage
