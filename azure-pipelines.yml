@@ -47,6 +47,11 @@ steps:
 - script: |
     cd $BUILD_SOURCESDIRECTORY/scripts/build/linux64
     bash ./build-linux64-toolchain.sh
+    rm -rf ./tarballs
+    rm -rf ./*-source
+    rm -rf ./*-build
+    rm -rf ./stamps
+    rm ./build-linux64-toolchain.sh
     tar -czf ../gcc-toolchain-mips64-linux64.tar.gz *
   displayName: 'Build linux64 Project'
   continueOnError: false
@@ -81,6 +86,12 @@ steps:
 - script: |
     cd $BUILD_SOURCESDIRECTORY/scripts/build/win64
     bash ./build-win64-toolchain.sh
+    rm -rf ./tarballs
+    rm -rf ./*-source
+    rm -rf ./*-build
+    rm -rf ./stamps
+    rm -rf ./x86_64-w64-mingw32
+    rm ./build-win64-toolchain.sh
     zip -r -q $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip *
   displayName: 'Build win64 Project'
   continueOnError: false
