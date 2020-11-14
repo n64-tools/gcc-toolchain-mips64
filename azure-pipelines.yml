@@ -81,7 +81,7 @@ steps:
 - script: |
     cd $BUILD_SOURCESDIRECTORY/scripts/build/win64
     bash ./build-win64-toolchain.sh
-    zip -rq ../gcc-toolchain-mips64-win64.zip *
+    zip -r -q $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip *
   displayName: 'Build win64 Project'
   continueOnError: false
 
