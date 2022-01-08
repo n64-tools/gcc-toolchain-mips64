@@ -11,3 +11,10 @@ Architecture | Download Links
 --- | --- 
 Windows x64 | [Latest](https://n64tools.blob.core.windows.net/binaries/N64-tools/mips64-gcc-toolchain/master/latest/gcc-toolchain-mips64-win64.zip)
 Linux x64 | [Latest](https://n64tools.blob.core.windows.net/binaries/N64-tools/mips64-gcc-toolchain/master/latest/gcc-toolchain-mips64-linux64.tar.gz)
+
+[![CI](https://github.com/7dog123/mips64-gcc-toolchain/actions/workflows/build-n64.yml/badge.svg)](https://github.com/7dog123/mips64-gcc-toolchain/actions/workflows/build-n64.yml)
+
+Architecture | Download Links
+--- | ---
+Windows x64 | [Latest](https://github.com/7dog123/mips64-gcc-toolchain/releases/latest/download/gcc-toolchain-mips64-win64.zip)
+Linux x64 | [Latest](https://github.com/7dog123/mips64-gcc-toolchain/releases/latest/download/gcc-toolchain-mips64-linux64.tar.gz)
