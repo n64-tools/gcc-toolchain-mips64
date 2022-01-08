@@ -360,9 +360,12 @@ if [ ! -f stamps/gdb-install ]; then
   touch stamps/gdb-install
 fi
 
-rm -rf "${SCRIPT_DIR}"/../tools/tarballs
-rm -rf "${SCRIPT_DIR}"/../tools/*-source
-rm -rf "${SCRIPT_DIR}"/../tools/*-build
-rm -rf "${SCRIPT_DIR}"/../tools/stamps
+rm -rf "${SCRIPT_DIR}"/tarballs
+rm -rf "${SCRIPT_DIR}"/*-source
+rm -rf "${SCRIPT_DIR}"/*-build
+rm -rf "${SCRIPT_DIR}"/stamps
+rm -rf "${SCRIPT_DIR}"/make-*.patch
+rm -rf "${SCRIPT_DIR}"/x86_64-w64-mingw32
+rm -rf "${SCRIPT_DIR}"/build-win64-toolchain.sh
 exit 0
 
