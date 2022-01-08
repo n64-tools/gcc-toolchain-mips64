@@ -24,7 +24,7 @@ GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.1.tar.gz"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR} && mkdir -p {stamps,tarballs}
 
-export PATH="${PATH}:${SCRIPT_DIR}/bin"
+export PATH="${PATH}:${SCRIPT_DIR}/bin:${SCRIPT_DIR}/../linux64/bin"
 
 if [ ! -f stamps/binutils-download ]; then
   wget "${BINUTILS}" -O "tarballs/$(basename ${BINUTILS})"
