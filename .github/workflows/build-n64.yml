@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  repository_dispatch:
+    types: [run_build]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    # Depending on Ubuntu version, maybe required for GCC install.
+    - name: Add GCC Repository
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        sudo apt-get -qq update
+
+    # Some of these packages may already be installed, but update just incase (it doesn't hurt)!
+    - name: Install Required Packages
+      run: |
+        sudo apt-get install -y build-essential software-properties-common
+        sudo apt-get install -y gcc-10
+        sudo apt-get install -y g++-10 mingw-w64 libgmp-dev bison
+        sudo apt-get install -y libmpfr-dev libmpc-dev
+        sudo apt-get install -y byacc texinfo
+        sudo apt-get install -y zip gzip tar
+
+    # Generate a changelog (not currently that helpful (and not required for local builds)).
+    - name: Create Changelog
+      run: |
+       touch "CHANGELOG.txt"
+       git log --oneline --decorate > CHANGELOG.txt
+
+    # Build the mips64 GCC toolchain against linux and compress it ready for upload (local builds could run build.sh).
+    - name: Build linux64 Project
+      run:  |
+       cd $GITHUB_WORKSPACE/scripts/build/linux64
+       bash ./build-linux64-toolchain.sh
+       tar -czf ../gcc-toolchain-mips64-linux64.tar.gz *
+
+    # Move the compressed linux folder ready for upload (not needed for local builds).
+    - name: Move linux Artifacts to $GITHUB_WORKSPACE/linux64
+      run: |
+       mkdir -p $GITHUB_WORKSPACE/linux64/
+       mv "$GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$GITHUB_WORKSPACE/linux64/"
+   
+    # Publish the compressed linux folder to the to github Artifacts (not needed for local builds).
+    - name: Publish linux Build Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+       name: gcc-toolchain-mips64-linux64.tar.gz
+       path: linux64/gcc-toolchain-mips64-linux64.tar.gz
+
+    # Build the GCC toolchain against linux (for windows) and compress it (local builds could run build.sh).
+    - name: Build win64 Project
+      run: |
+       cd $GITHUB_WORKSPACE/scripts/build/win64
+       bash ./build-win64-toolchain.sh
+       zip -r -q $GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-win64.zip *
+
+    # Move the compressed windows folder ready for upload (not needed for local builds).
+    - name: Move windows Artifacts to $GITHUB_WORKSPACE/win64
+      run: |
+       mkdir -p $GITHUB_WORKSPACE/win64/
+       mv "$GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-win64.zip" "$GITHUB_WORKSPACE/win64/"
+    
+    # Publish windows build artifacts to github Artifacts (not needed for local builds).
+    - name: Publish windows Build Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+       name: gcc-toolchain-mips64-win64.zip
+       path: win64/gcc-toolchain-mips64-win64.zip
+
+    - name: Release
+      if: startsWith(github.ref, 'refs/heads/')
+      uses: softprops/action-gh-release@v1
+      with:
+       prerelease: false
+       name: "Release"
+       tag_name: "latest"
+       files: |
+        linux64/gcc-toolchain-mips64-linux64.tar.gz
+        win64/gcc-toolchain-mips64-win64.zip
+
