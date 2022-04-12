@@ -4,25 +4,25 @@ pool:
 steps:
 
 # Updating the python version available on the linux agent.
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.x'
-    architecture: 'x64'
+# - task: UsePythonVersion@0
+#   inputs:
+#     versionSpec: '3.x'
+#     architecture: 'x64'
 
 # Updating pip to latest (Required for Azure CLI - not needed for local builds).
-- script: python -m pip install --upgrade pip
-  displayName: 'Upgrade pip'
+# - script: python -m pip install --upgrade pip
+#   displayName: 'Upgrade pip'
 
 # # Updating to latest Azure CLI version.  (Required for Azure CLI - not needed for local builds).
 # - script: pip install --pre azure-cli --extra-index-url https://azurecliprod.blob.core.windows.net/edge
 #   displayName: 'upgrade azure cli'
 
-# Depending on Ubuntu version, maybe required for GCC install.
-- script: |
-    sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-    sudo apt-get -qq update
-  displayName: 'Add GCC Repository'
-  continueOnError: false
+# # Depending on Ubuntu version, maybe required for GCC install.
+# - script: |
+#     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+#     sudo apt-get -qq update
+#   displayName: 'Add GCC Repository'
+#   continueOnError: false
 
 # Some of these packages may already be installed, but update just incase (it doesn't hurt)!
 - script: |
@@ -56,23 +56,23 @@ steps:
   displayName: 'Build linux64 Project'
   continueOnError: false
 
-# Move the compressed linux folder ready for upload (not needed for local builds).
-- bash: |
-    mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/
-    mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/"
-  displayName: 'Move linux Artifacts to Staging Directory'
-  continueOnError: false
+# # Move the compressed linux folder ready for upload (not needed for local builds).
+# - bash: |
+#     mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/
+#     mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/"
+#   displayName: 'Move linux Artifacts to Staging Directory'
+#   continueOnError: false
 
-# Publish the compressed linux folder to the to Azure Artifacts/TFS or a file share (not needed for local builds).
-- task: PublishBuildArtifacts@1
-  displayName: Publish linux Build Artifacts
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/linux64/'
-    artifactName: 'binaries/linux64' 
-    publishLocation: 'Container' # Options: container, filePath
-    #targetPath: # Required when publishLocation == FilePath
-    parallel: true # Optional
-    #parallelCount: # Optional
+# # Publish the compressed linux folder to the to Azure Artifacts/TFS or a file share (not needed for local builds).
+# - task: PublishBuildArtifacts@1
+#   displayName: Publish linux Build Artifacts
+#   inputs:
+#     pathtoPublish: '$(Build.ArtifactStagingDirectory)/linux64/'
+#     artifactName: 'binaries/linux64' 
+#     publishLocation: 'Container' # Options: container, filePath
+#     #targetPath: # Required when publishLocation == FilePath
+#     parallel: true # Optional
+#     #parallelCount: # Optional
 
 # # upload the compressed linux folder to a web accessible fileshare (not needed for local builds).
 # - task: AzureCLI@1
