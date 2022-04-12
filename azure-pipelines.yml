@@ -74,13 +74,13 @@ steps:
     parallel: true # Optional
     #parallelCount: # Optional
 
-# upload the compressed linux folder to a web accessible fileshare (not needed for local builds).
-- task: AzureCLI@1
-  inputs:
-    azureSubscription: 'MsdnAzureServiceRole'
-    scriptLocation: inlineScript
-    inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/linux64/gcc-toolchain-mips64-linux64.tar.gz -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-linux64.tar.gz'
-  displayName: Upload linux binary to blob storage
+# # upload the compressed linux folder to a web accessible fileshare (not needed for local builds).
+# - task: AzureCLI@1
+#   inputs:
+#     azureSubscription: 'MsdnAzureServiceRole'
+#     scriptLocation: inlineScript
+#     inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/linux64/gcc-toolchain-mips64-linux64.tar.gz -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-linux64.tar.gz'
+#   displayName: Upload linux binary to blob storage
   
 # Build the GCC toolchain against linux (for windows) and compress it (local builds could run build.sh).
 - script: |
@@ -114,11 +114,11 @@ steps:
     parallel: true # Optional
     #parallelCount: # Optional
     
-# Upload the compressed windows folder to a web accessible fileshare (not needed for local builds).
-- task: AzureCLI@1
-  inputs:
-    azureSubscription: 'MsdnAzureServiceRole'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/win64/gcc-toolchain-mips64-win64.zip -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-win64.zip'
-  displayName: Upload windows binary to blob storage
+# # Upload the compressed windows folder to a web accessible fileshare (not needed for local builds).
+# - task: AzureCLI@1
+#   inputs:
+#     azureSubscription: 'MsdnAzureServiceRole'
+#     scriptLocation: 'inlineScript'
+#     inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/win64/gcc-toolchain-mips64-win64.zip -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-win64.zip'
+#   displayName: Upload windows binary to blob storage
   
