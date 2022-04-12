@@ -13,9 +13,9 @@ steps:
 - script: python -m pip install --upgrade pip
   displayName: 'Upgrade pip'
 
-# Updating to latest Azure CLI version.  (Required for Azure CLI - not needed for local builds).
-- script: pip install --pre azure-cli --extra-index-url https://azurecliprod.blob.core.windows.net/edge
-  displayName: 'upgrade azure cli'
+# # Updating to latest Azure CLI version.  (Required for Azure CLI - not needed for local builds).
+# - script: pip install --pre azure-cli --extra-index-url https://azurecliprod.blob.core.windows.net/edge
+#   displayName: 'upgrade azure cli'
 
 # Depending on Ubuntu version, maybe required for GCC install.
 - script: |
