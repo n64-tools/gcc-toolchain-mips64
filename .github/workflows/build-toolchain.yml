@@ -85,4 +85,5 @@ jobs:
        files: |
         linux64/gcc-toolchain-mips64-linux64.tar.gz
         win64/gcc-toolchain-mips64-win64.zip
+        CHANGELOG.txt
 
