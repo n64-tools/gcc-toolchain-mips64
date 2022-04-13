@@ -51,23 +51,23 @@ steps:
   displayName: 'Build linux64 Project'
   continueOnError: false
 
-# # Move the compressed linux folder ready for upload (not needed for local builds).
-# - bash: |
-#     mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/
-#     mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/"
-#   displayName: 'Move linux Artifacts to Staging Directory'
-#   continueOnError: false
+# Move the compressed linux folder ready for upload (not needed for local builds).
+- bash: |
+    mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/
+    mv "$BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$BUILD_ARTIFACTSTAGINGDIRECTORY/linux64/"
+  displayName: 'Move linux Artifacts to Staging Directory'
+  continueOnError: false
 
-# # Publish the compressed linux folder to the to Azure Artifacts/TFS or a file share (not needed for local builds).
-# - task: PublishBuildArtifacts@1
-#   displayName: Publish linux Build Artifacts
-#   inputs:
-#     pathtoPublish: '$(Build.ArtifactStagingDirectory)/linux64/'
-#     artifactName: 'binaries/linux64' 
-#     publishLocation: 'Container' # Options: container, filePath
-#     #targetPath: # Required when publishLocation == FilePath
-#     parallel: true # Optional
-#     #parallelCount: # Optional
+# Publish the compressed linux folder to the to Azure Artifacts/TFS or a file share (not needed for local builds).
+- task: PublishBuildArtifacts@1
+  displayName: Publish linux Build Artifacts
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/linux64/'
+    artifactName: 'binaries/linux64' 
+    publishLocation: 'Container' # Options: container, filePath
+    #targetPath: # Required when publishLocation == FilePath
+    parallel: true # Optional
+    #parallelCount: # Optional
 
 # # upload the compressed linux folder to a web accessible fileshare (not needed for local builds).
 # - task: AzureCLI@1

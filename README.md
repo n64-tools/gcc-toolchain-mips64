@@ -10,5 +10,5 @@ The binaries can be downloaded as part of other build scripts which saves time (
 
 Architecture | Download Links
 --- | ---
-Windows x64 | [Latest](https://github.com/n66-tools/mips64-gcc-toolchain/releases/latest/download/gcc-toolchain-mips64-win64.zip)
+Windows x64 | [Latest](https://github.com/n64-tools/mips64-gcc-toolchain/releases/latest/download/gcc-toolchain-mips64-win64.zip)
 Linux x64 | [Latest](https://github.com/n64-tools/mips64-gcc-toolchain/releases/latest/download/gcc-toolchain-mips64-linux64.tar.gz)

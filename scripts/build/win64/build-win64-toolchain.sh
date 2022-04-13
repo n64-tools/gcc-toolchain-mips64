@@ -12,10 +12,10 @@ set -eu
 # 'LICENSE', which is part of this source code package.
 #
 
-BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.bz2" # can we move to 2.38?
+BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz" # can we move to 10.3?
 GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
-MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz"
+MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz" # See what patches are needed from https://github.com/mbuilov/gnumake-windows for 4.3!
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
 NEWLIB="https://sourceware.org/pub/newlib/newlib-3.3.0.tar.gz" # can we move to 4.1.0?
@@ -24,7 +24,7 @@ GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.1.tar.gz"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR} && mkdir -p {stamps,tarballs}
 
-export PATH="${PATH}:${SCRIPT_DIR}/bin":${SCRIPT_DIR}/../linux64/bin"
+export PATH="${PATH}:${SCRIPT_DIR}/bin:${SCRIPT_DIR}/../linux64/bin"
 
 if [ ! -f stamps/binutils-download ]; then
   wget "${BINUTILS}" -O "tarballs/$(basename ${BINUTILS})"
