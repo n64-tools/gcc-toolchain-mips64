@@ -12,7 +12,7 @@ set -eu
 # 'LICENSE', which is part of this source code package.
 #
 
-BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.35.1.tar.gz" # can we move to 2.38?
+BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.bz2" # can we move to 2.38?
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz" # can we move to 10.3?
 GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz"
