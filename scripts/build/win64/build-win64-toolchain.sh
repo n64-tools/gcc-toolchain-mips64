@@ -13,7 +13,7 @@ set -eu
 #
 
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
-GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz" #can we move to 10.3?
+GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.1.0/gcc-10.1.0.tar.gz" #can we move to 10.3?
 GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available1
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz"
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"

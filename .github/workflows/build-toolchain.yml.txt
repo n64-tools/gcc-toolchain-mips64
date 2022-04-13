@@ -5,28 +5,31 @@
 #       - name: Checkout
 #         uses: actions/checkout@v2
 
+#       - name: Install required dependencies
+#         run: |
+            # Definitely required
+            sudo apt-get install -yq libmpfr-dev libmpc-dev texinfo
+
+            # Maybe required
+            sudo apt-get install -yq wget bzip2 gcc g++ make file zlib1g-dev git gcc-multilib
+            
+            # Required when it was Azure...
+            # sudo apt-get install -yq build-essential software-properties-common
+            # sudo apt-get install -yq gcc-10
+            sudo apt-get install -yq g++-10 mingw-w64 libgmp-dev bison
+            sudo apt-get install -yq byacc
+            # sudo apt-get install -yq zip gzip tar
+            
+            # might be new requirements...
+            sudo apt-get install -yq gcc-9-locales wine wine64
+
 #       # Build the toolchain if toolchain files changed w.r.t default which is
 #       - name: Build x86_64 Toolchain
-#         if: ${{ steps.path_diff.outputs.changed == 1 }}
 #         run: |
-#           # Install required dependencies
-#           sudo apt-get install -yq wget bzip2 gcc g++ make file libmpfr-dev libmpc-dev zlib1g-dev texinfo git gcc-multilib
-#           # Install Windows cross compile specific dependencies
-#           sudo apt-get install -yq mingw-w64 libz-mingw-w64-dev autoconf autoconf-archive
-#           mkdir -p build/toolchain/windows-x86_64
-#           cp ./tools/build-toolchain.sh ./build/toolchain/windows-x86_64/build-toolchain.sh
-#           cd ./build/toolchain/windows-x86_64
-#           sudo  HOST=x86_64-w64-mingw32 \
-#                 N64_INST=${{ github.workspace }}/build/toolchain/windows-x86_64/n64_toolchain \
-#                 GMP_V=6.2.0 \
-#                 MPC_V=1.2.1 \
-#                 MPFR_V=4.1.0 \
-#                 MAKE_V=4.2.1 \
-#                 ./build-toolchain.sh
-#           # cd ${{ github.workspace }}
-#           # make && make install
+
+
 #       - name: Upload Toolchain Artifacts
 #         uses: actions/upload-artifact@v3
 #         with:
 #           name: "windows-x86_64-toolchain"
-#           path: ${{ github.workspace }}/**/n64_toolchain/**/*
+#           path: ${{ github.workspace }}/**/win64/**/*
