@@ -15,7 +15,7 @@ set -eu
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz" #can we move to 10.3?
 MAKE="https://ftp.gnu.org/gnu/make/make-4.3.tar.gz"
-NEWLIB="https://sourceware.org/pub/newlib/newlib-3.3.0.tar.gz" # can we move to 4.1.0?
+NEWLIB="https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz"
 GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.1.tar.gz"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -64,7 +64,7 @@ fi
 
 if [ ! -f stamps/binutils-install ]; then
   pushd binutils-build
-  make install
+  make install-strip
   popd
 
   touch stamps/binutils-install
@@ -128,7 +128,7 @@ fi
 
 if [ ! -f stamps/gcc-install ]; then
   pushd gcc-build
-  make install-gcc
+  make install-strip-gcc
   popd
 
   # build-win32-toolchain.sh needs this; the cross-compiler build
@@ -208,7 +208,7 @@ fi
 
 if [ ! -f stamps/newlib-configure ]; then
   pushd newlib-build
-    CFLAGS="-O2 -fomit-frame-pointer -ffast-math -fstrict-aliasing" \
+    CFLAGS="-O2 -DHAVE_ASSERT_FUNC -fomit-frame-pointer -ffast-math -fstrict-aliasing" \
         ../newlib-source/configure \
         --disable-bootstrap \
         --disable-build-poststage1-with-cxx \
@@ -219,6 +219,8 @@ if [ ! -f stamps/newlib-configure ]; then
         --disable-libquadmath \
         --disable-libquadmath-support \
         --disable-libssp \
+        --disable-threads \
+        --disable-werror \
         --disable-maintainer-mode \
         --disable-malloc-debugging \
         --disable-multilib \

@@ -36,7 +36,7 @@ jobs:
        git log --oneline --decorate > CHANGELOG.txt
 
     # Build the mips64 GCC toolchain against linux and compress it ready for upload (local builds could run build.sh).
-    - name: Build linux64 Project
+    - name: Build linux64 toolchain
       run:  |
        cd $GITHUB_WORKSPACE/scripts/build/linux64
        bash ./build-linux64-toolchain.sh
@@ -52,11 +52,11 @@ jobs:
     - name: Publish linux Build Artifacts
       uses: actions/upload-artifact@v2
       with:
-       name: gcc-toolchain-mips64-linux64.tar.gz
+       name: gcc-toolchain-mips64-linux64
        path: linux64/gcc-toolchain-mips64-linux64.tar.gz
 
     # Build the GCC toolchain against linux (for windows) and compress it (local builds could run build.sh).
-    - name: Build win64 Project
+    - name: Build win64 toolchain
       run: |
        cd $GITHUB_WORKSPACE/scripts/build/win64
        bash ./build-win64-toolchain.sh
@@ -72,7 +72,7 @@ jobs:
     - name: Publish windows Build Artifacts
       uses: actions/upload-artifact@v2
       with:
-       name: gcc-toolchain-mips64-win64.zip
+       name: gcc-toolchain-mips64-win64
        path: win64/gcc-toolchain-mips64-win64.zip
 
     - name: Release

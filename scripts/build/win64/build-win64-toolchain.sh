@@ -18,7 +18,7 @@ GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz" # See what patches are needed from https://github.com/mbuilov/gnumake-windows for 4.3!
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
-NEWLIB="https://sourceware.org/pub/newlib/newlib-3.3.0.tar.gz" # can we move to 4.1.0?
+NEWLIB="https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz"
 GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.1.tar.gz"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -256,7 +256,7 @@ fi
 
 if [ ! -f stamps/newlib-configure ]; then
   pushd newlib-build
-    CFLAGS="-O2 -fomit-frame-pointer -ffast-math -fstrict-aliasing" \
+    CFLAGS="-O2 -DHAVE_ASSERT_FUNC -fomit-frame-pointer -ffast-math -fstrict-aliasing" \
         ../newlib-source/configure \
         --build=x86_64-linux-gnu \
         --host=x86_64-w64-mingw32 \
@@ -269,6 +269,8 @@ if [ ! -f stamps/newlib-configure ]; then
         --disable-libquadmath \
         --disable-libquadmath-support \
         --disable-libssp \
+        --disable-threads \
+        --disable-werror \
         --disable-maintainer-mode \
         --disable-malloc-debugging \
         --disable-multilib \
