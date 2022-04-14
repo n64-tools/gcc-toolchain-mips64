@@ -3,15 +3,19 @@ name: CI
 on:
   push:
   pull_request:
-  repository_dispatch:
-    types: [run_build]
+    branches:   
+      - '!develop**'   # excludes develop* branches (reserved to not duplicate builds that are not on forks)
+  # repository_dispatch:
+  #   types: [run_build]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     # Depending on Ubuntu version, maybe required for GCC install.
     - name: Add GCC Repository
@@ -29,11 +33,11 @@ jobs:
         sudo apt-get install -y byacc texinfo
         sudo apt-get install -y zip gzip tar
 
-    # Generate a changelog (not currently that helpful (and not required for local builds)).
-    - name: Create Changelog
-      run: |
-       touch "CHANGELOG.txt"
-       git log --oneline --decorate > CHANGELOG.txt
+    # # Generate a changelog (not currently that helpful (and not required for local builds)).
+    # - name: Create Changelog
+    #   run: |
+    #    touch "CHANGELOG.txt"
+    #    git log --oneline --decorate > CHANGELOG.txt
 
     # Build the mips64 GCC toolchain against linux and compress it ready for upload (local builds could run build.sh).
     - name: Build linux64 toolchain
@@ -41,12 +45,14 @@ jobs:
        cd $GITHUB_WORKSPACE/scripts/build/linux64
        bash ./build-linux64-toolchain.sh
        rm ./build-linux64-toolchain.sh
-       tar -czf ../gcc-toolchain-mips64-linux64.tar.gz *
 
     # Move the compressed linux folder ready for upload (not needed for local builds).
-    - name: Move linux Artifacts to $GITHUB_WORKSPACE/linux64
+    - name: Compress and move linux artifact to $GITHUB_WORKSPACE/linux64
+      if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
       run: |
        mkdir -p $GITHUB_WORKSPACE/linux64/
+       cd $GITHUB_WORKSPACE/scripts/build/linux64
+       tar -czf ../gcc-toolchain-mips64-linux64.tar.gz *
        mv "$GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$GITHUB_WORKSPACE/linux64/"
    
     # # Publish the compressed linux folder to the to github Artifacts (not needed unless debugging (adds considerable time)).
@@ -63,12 +69,14 @@ jobs:
        cd $GITHUB_WORKSPACE/scripts/build/win64
        bash ./build-win64-toolchain.sh
        rm ./build-win64-toolchain.sh
-       zip -r -q $GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-win64.zip *
 
     # Move the compressed windows folder ready for upload (not needed for local builds).
-    - name: Move windows Artifacts to $GITHUB_WORKSPACE/win64
+    - name: Compress and move windows artifacts to $GITHUB_WORKSPACE/win64
+      if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
       run: |
        mkdir -p $GITHUB_WORKSPACE/win64/
+       cd $GITHUB_WORKSPACE/scripts/build/win64
+       zip -r -q $GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-win64.zip *
        mv "$GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-win64.zip" "$GITHUB_WORKSPACE/win64/"
     
     # Publish windows build artifacts to github Artifacts (not needed for local builds).
@@ -78,16 +86,16 @@ jobs:
        name: gcc-toolchain-mips64-win64
        path: ${{ github.workspace }}/scripts/build/win64/*
 
-    - name: Release
-      if: startsWith(github.ref, 'refs/heads/master')
+    - name: Generate Draft Release
+      if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
        draft: true
        prerelease: true
-       name: "Release"
-       tag_name: "latest"
+       name: "Vx.x.x-y"
+       #tag_name: "latest"
        files: |
         linux64/gcc-toolchain-mips64-linux64.tar.gz
         win64/gcc-toolchain-mips64-win64.zip
-        CHANGELOG.txt
+       # CHANGELOG.txt
 
