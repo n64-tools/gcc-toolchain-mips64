@@ -44,7 +44,7 @@ if [ ! -f stamps/binutils-configure ]; then
     --host=x86_64-w64-mingw32 \
     --prefix="${SCRIPT_DIR}" \
     --with-lib-path="${SCRIPT_DIR}/lib" \
-    --target=mips64-elf --with-arch=vr4300 \
+    --target=mips64-elf --with-cpu=mips64vr4300 \
     --enable-64-bit-bfd \
     --enable-plugins \
     --enable-shared \
@@ -126,6 +126,7 @@ if [ ! -f stamps/gcc-configure ]; then
     --host=x86_64-w64-mingw32 \
     --prefix="${SCRIPT_DIR}" \
     --target=mips64-elf --with-arch=vr4300 \
+    --with-tune=vr4300 \
     --enable-languages=c,c++ --without-headers --with-newlib \
     --with-gnu-as=${SCRIPT_DIR}/bin/mips64-elf-as.exe \
     --with-gnu-ld=${SCRIPT_DIR}/bin/mips64-elf-ld.exe \
@@ -289,7 +290,7 @@ if [ ! -f stamps/newlib-configure ]; then
         --enable-newlib-io-pos-args \
         --enable-newlib-reent-small \
         --prefix="${SCRIPT_DIR}" \
-        --target=mips64-elf --with-arch=vr4300 \
+        --target=mips64-elf --with-cpu=mips64vr4300 \
         --with-endian=little \
         --without-cloog \
         --without-gmp \
