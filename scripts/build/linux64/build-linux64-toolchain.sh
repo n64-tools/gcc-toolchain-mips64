@@ -6,7 +6,7 @@ set -eu
 #
 # n64chain: A (free) open-source N64 development toolchain.
 # Copyright 2014-2018 Tyler J. Stachecki <stachecki.tyler@gmail.com>
-# Modified for N64-TOOLS by Robin Jones
+# Heavily modified for N64-TOOLS by Robin Jones
 #
 # This file is subject to the terms and conditions defined in
 # 'LICENSE', which is part of this source code package.
@@ -40,11 +40,11 @@ fi
 if [ ! -f stamps/binutils-configure ]; then
   pushd binutils-build
   ../binutils-source/configure \
+    --prefix="${SCRIPT_DIR}" \
     --build="$BUILD" \
     --host="$HOST" \
-    --prefix="${SCRIPT_DIR}" \
-    --with-lib-path="${SCRIPT_DIR}/lib" \
     --target=mips64-elf --with-cpu=mips64vr4300 \
+    --with-lib-path="${SCRIPT_DIR}/lib" \
     --enable-64-bit-bfd \
     --enable-plugins \
     --enable-shared \
@@ -89,9 +89,9 @@ fi
 if [ ! -f stamps/gcc-configure ]; then
   pushd gcc-build
   ../gcc-source/configure \
+    --prefix="${SCRIPT_DIR}" \
     --build="$BUILD" \
     --host="$HOST" \
-    --prefix="${SCRIPT_DIR}" \
     --target=mips64-elf --with-arch=vr4300 \
     --with-tune=vr4300 \
     --enable-languages=c,c++ --without-headers --with-newlib \
@@ -159,12 +159,19 @@ if [ ! -f stamps/make-extract ]; then
   touch stamps/make-extract
 fi
 
+if [ ! -f stamps/make-patch ]; then
+  pushd make-source
+  patch -p1 -i ../make-*.patch # Apply patches if they exist in the folder
+  popd
+  touch stamps/make-patch
+fi
+
 if [ ! -f stamps/make-configure ]; then
   pushd make-build
   ../make-source/configure \
+    --prefix="${SCRIPT_DIR}" \
     --build="$BUILD" \
     --host="$HOST" \
-    --prefix="${SCRIPT_DIR}" \
     --disable-largefile \
     --disable-nls \
     --disable-rpath
@@ -220,8 +227,10 @@ if [ ! -f stamps/newlib-configure ]; then
   pushd newlib-build
     CFLAGS="-O2 -DHAVE_ASSERT_FUNC -fomit-frame-pointer -ffast-math -fstrict-aliasing" \
         ../newlib-source/configure \
+        --prefix="${SCRIPT_DIR}" \
         --build="$BUILD" \
         --host="$HOST" \
+        --target=mips64-elf --with-cpu=mips64vr4300 \
         --disable-bootstrap \
         --disable-build-poststage1-with-cxx \
         --disable-build-with-cxx \
@@ -230,9 +239,6 @@ if [ ! -f stamps/newlib-configure ]; then
         --disable-libada \
         --disable-libquadmath \
         --disable-libquadmath-support \
-        --disable-libssp \
-        --disable-threads \
-        --disable-werror \
         --disable-maintainer-mode \
         --disable-malloc-debugging \
         --disable-multilib \
@@ -250,13 +256,14 @@ if [ ! -f stamps/newlib-configure ]; then
         --enable-newlib-io-c99-formats \
         --enable-newlib-io-pos-args \
         --enable-newlib-reent-small \
-        --prefix="${SCRIPT_DIR}" \
-        --target=mips64-elf --with-cpu=mips64vr4300 \
         --with-endian=little \
         --without-cloog \
         --without-gmp \
         --without-mpc \
-        --without-mpfr
+        --without-mpfr \
+        --disable-libssp \
+        --disable-threads \
+        --disable-werror
          popd
 
   touch stamps/newlib-configure
@@ -293,11 +300,11 @@ if [ ! -f stamps/gdb-configure ]; then
   pushd gdb-build
     CFLAGS="" LDFLAGS="" \
         ../gdb-source/configure \
-        --disable-werror \
+        --prefix="${SCRIPT_DIR}" \
         --build="$BUILD" \
         --host="$HOST" \
-        --prefix="${SCRIPT_DIR}" \
-        --target=mips64-elf --with-arch=vr4300
+        --target=mips64-elf --with-arch=vr4300 \
+        --disable-werror
          popd
 
   touch stamps/gdb-configure
@@ -319,9 +326,10 @@ if [ ! -f stamps/gdb-install ]; then
   touch stamps/gdb-install
 fi
 
-rm -rf "${SCRIPT_DIR}"/../tools/tarballs
-rm -rf "${SCRIPT_DIR}"/../tools/*-source
-rm -rf "${SCRIPT_DIR}"/../tools/*-build
-rm -rf "${SCRIPT_DIR}"/../tools/stamps
+rm -rf "${SCRIPT_DIR}"/tarballs
+rm -rf "${SCRIPT_DIR}"/*-source
+rm -rf "${SCRIPT_DIR}"/*-build
+rm -rf "${SCRIPT_DIR}"/stamps
+rm -rf "${SCRIPT_DIR}"/make-*.patch
 exit 0
 
