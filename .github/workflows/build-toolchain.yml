@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
     branches-ignore:   
-      - 'develop*'   # excludes develop* branches (reserved to not duplicate builds that are not on forks)
+      - 'develop**'   # excludes develop* branches (reserved to not duplicate builds that are not on forks)
   repository_dispatch:
     types: [run_build]
 
