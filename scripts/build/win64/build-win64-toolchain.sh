@@ -372,6 +372,5 @@ rm -rf "${SCRIPT_DIR}"/*-build
 rm -rf "${SCRIPT_DIR}"/stamps
 rm -rf "${SCRIPT_DIR}"/make-*.patch
 rm -rf "${SCRIPT_DIR}"/x86_64-w64-mingw32
-rm -rf "${SCRIPT_DIR}"/build-win64-toolchain.sh # TODO: is it wise to delete ones self?!
 exit 0
 

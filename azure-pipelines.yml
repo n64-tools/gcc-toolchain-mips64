@@ -3,27 +3,6 @@ pool:
 
 steps:
 
-# Updating the python version available on the linux agent.
-# - task: UsePythonVersion@0
-#   inputs:
-#     versionSpec: '3.x'
-#     architecture: 'x64'
-
-# Updating pip to latest (Required for Azure CLI - not needed for local builds).
-# - script: python -m pip install --upgrade pip
-#   displayName: 'Upgrade pip'
-
-# # Updating to latest Azure CLI version.  (Required for Azure CLI - not needed for local builds).
-# - script: pip install --pre azure-cli --extra-index-url https://azurecliprod.blob.core.windows.net/edge
-#   displayName: 'upgrade azure cli'
-
-# # Depending on Ubuntu version, maybe required for GCC install.
-# - script: |
-#     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-#     sudo apt-get -qq update
-#   displayName: 'Add GCC Repository'
-#   continueOnError: false
-
 # Some of these packages may already be installed, but update just incase (it doesn't hurt)!
 - script: |
     sudo apt-get install -y build-essential software-properties-common
@@ -47,6 +26,7 @@ steps:
 - script: |
     cd $BUILD_SOURCESDIRECTORY/scripts/build/linux64
     bash ./build-linux64-toolchain.sh
+    rm ./build-linux64-toolchain.sh
     tar -czf ../gcc-toolchain-mips64-linux64.tar.gz *
   displayName: 'Build linux64 Project'
   continueOnError: false
@@ -69,18 +49,12 @@ steps:
     parallel: true # Optional
     #parallelCount: # Optional
 
-# # upload the compressed linux folder to a web accessible fileshare (not needed for local builds).
-# - task: AzureCLI@1
-#   inputs:
-#     azureSubscription: 'MsdnAzureServiceRole'
-#     scriptLocation: inlineScript
-#     inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/linux64/gcc-toolchain-mips64-linux64.tar.gz -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-linux64.tar.gz'
-#   displayName: Upload linux binary to blob storage
   
 # Build the GCC toolchain against linux (for windows) and compress it (local builds could run build.sh).
 - script: |
     cd $BUILD_SOURCESDIRECTORY/scripts/build/win64
     bash ./build-win64-toolchain.sh
+    rm ./build-win64-toolchain.sh
     zip -r -q $BUILD_SOURCESDIRECTORY/scripts/build/gcc-toolchain-mips64-win64.zip *
   displayName: 'Build win64 Project'
   continueOnError: false
@@ -102,12 +76,4 @@ steps:
     #targetPath: # Required when publishLocation == FilePath
     parallel: true # Optional
     #parallelCount: # Optional
-    
-# # Upload the compressed windows folder to a web accessible fileshare (not needed for local builds).
-# - task: AzureCLI@1
-#   inputs:
-#     azureSubscription: 'MsdnAzureServiceRole'
-#     scriptLocation: 'inlineScript'
-#     inlineScript: 'az storage blob upload --account-name n64tools -f $(Build.ArtifactStagingDirectory)/win64/gcc-toolchain-mips64-win64.zip -c binaries -n N64-tools/mips64-gcc-toolchain/$(Build.SourceBranchName)/latest/gcc-toolchain-mips64-win64.zip'
-#   displayName: Upload windows binary to blob storage
-  
+

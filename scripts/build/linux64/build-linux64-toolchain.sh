@@ -323,6 +323,5 @@ rm -rf "${SCRIPT_DIR}"/../tools/tarballs
 rm -rf "${SCRIPT_DIR}"/../tools/*-source
 rm -rf "${SCRIPT_DIR}"/../tools/*-build
 rm -rf "${SCRIPT_DIR}"/../tools/stamps
-rm -rf "${SCRIPT_DIR}"/build-linux64-toolchain.sh # TODO: is it wise to delete ones self?!
 exit 0
 
