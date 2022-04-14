@@ -8,10 +8,20 @@ on:
 
 jobs:
   build:
+    name: "Build ${{ github.repository }}"
+    # avoid duplicate builds for internal pull-requests
+    if: >-
+      ${{
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'push' &&
+      github.event.pull_request.head.repo.full_name != 'N64-tools/mips64-gcc-toolchain')
+      }}
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+      fetch-depth: 0
 
     # Depending on Ubuntu version, maybe required for GCC install.
     - name: Add GCC Repository
