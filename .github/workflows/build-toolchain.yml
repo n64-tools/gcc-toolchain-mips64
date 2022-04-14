@@ -45,12 +45,14 @@ jobs:
        cd $GITHUB_WORKSPACE/scripts/build/linux64
        bash ./build-linux64-toolchain.sh
        rm ./build-linux64-toolchain.sh
-       tar -czf ../gcc-toolchain-mips64-linux64.tar.gz *
 
     # Move the compressed linux folder ready for upload (not needed for local builds).
-    - name: Move linux Artifacts to $GITHUB_WORKSPACE/linux64
+    - name: Compress and move linux artifact to $GITHUB_WORKSPACE/linux64
+      if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
       run: |
        mkdir -p $GITHUB_WORKSPACE/linux64/
+       cd $GITHUB_WORKSPACE/scripts/build/linux64
+       tar -czf ../gcc-toolchain-mips64-linux64.tar.gz *
        mv "$GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$GITHUB_WORKSPACE/linux64/"
    
     # # Publish the compressed linux folder to the to github Artifacts (not needed unless debugging (adds considerable time)).
@@ -67,12 +69,14 @@ jobs:
        cd $GITHUB_WORKSPACE/scripts/build/win64
        bash ./build-win64-toolchain.sh
        rm ./build-win64-toolchain.sh
-       zip -r -q $GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-win64.zip *
 
     # Move the compressed windows folder ready for upload (not needed for local builds).
-    - name: Move windows Artifacts to $GITHUB_WORKSPACE/win64
+    - name: Compress and move windows artifacts to $GITHUB_WORKSPACE/win64
+      if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
       run: |
        mkdir -p $GITHUB_WORKSPACE/win64/
+       cd $GITHUB_WORKSPACE/scripts/build/win64
+       zip -r -q $GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-win64.zip *
        mv "$GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-win64.zip" "$GITHUB_WORKSPACE/win64/"
     
     # Publish windows build artifacts to github Artifacts (not needed for local builds).
