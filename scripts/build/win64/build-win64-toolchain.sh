@@ -12,12 +12,12 @@ set -eu
 # 'LICENSE', which is part of this source code package.
 #
 
+GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
+="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
+MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz"
-GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz" # See what patches are needed from https://github.com/mbuilov/gnumake-windows for 4.3!
-MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
-MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
 NEWLIB="https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz"
 GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.gz"
 
@@ -61,7 +61,7 @@ fi
 
 if [ ! -f stamps/binutils-build ]; then
   pushd binutils-build
-  make --jobs=2
+  make --jobs=4
   popd
 
   touch stamps/binutils-build
