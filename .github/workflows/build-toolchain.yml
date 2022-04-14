@@ -50,10 +50,11 @@ jobs:
    
     # Publish the compressed linux folder to the to github Artifacts (not needed for local builds).
     - name: Publish linux Build Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
        name: gcc-toolchain-mips64-linux64
-       path: linux64/gcc-toolchain-mips64-linux64.tar.gz
+       path: $GITHUB_WORKSPACE/scripts/build/linux64/**/*
+       retention-days: 5
 
     # Build the GCC toolchain against linux (for windows) and compress it (local builds could run build.sh).
     - name: Build win64 toolchain
@@ -70,10 +71,10 @@ jobs:
     
     # Publish windows build artifacts to github Artifacts (not needed for local builds).
     - name: Publish windows Build Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
        name: gcc-toolchain-mips64-win64
-       path: win64/gcc-toolchain-mips64-win64.zip
+       path: $GITHUB_WORKSPACE/scripts/build/win64/**/*
 
     - name: Release
       if: startsWith(github.ref, 'refs/heads/')
