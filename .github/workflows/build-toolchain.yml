@@ -48,13 +48,13 @@ jobs:
        mkdir -p $GITHUB_WORKSPACE/linux64/
        mv "$GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$GITHUB_WORKSPACE/linux64/"
    
-    # Publish the compressed linux folder to the to github Artifacts (not needed for local builds).
-    - name: Publish linux Build Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-       name: gcc-toolchain-mips64-linux64
-       path: ${{ github.workspace }}/scripts/build/linux64/*
-       retention-days: 5
+    # # Publish the compressed linux folder to the to github Artifacts (not needed for local builds).
+    # - name: Publish linux Build Artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #    name: gcc-toolchain-mips64-linux64
+    #    path: ${{ github.workspace }}/scripts/build/linux64/*
+    #    retention-days: 5
 
     # Build the GCC toolchain against linux (for windows) and compress it (local builds could run build.sh).
     - name: Build win64 toolchain
