@@ -6,7 +6,7 @@ set -eu
 #
 # n64chain: A (free) open-source N64 development toolchain.
 # Copyright 2014-2018 Tyler J. Stachecki <stachecki.tyler@gmail.com>
-# Modified for N64-TOOLS by Robin Jones 
+# Modified for N64-TOOLS by Robin Jones
 #
 # This file is subject to the terms and conditions defined in
 # 'LICENSE', which is part of this source code package.

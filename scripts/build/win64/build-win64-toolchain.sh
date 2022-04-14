@@ -6,14 +6,14 @@ set -eu
 #
 # n64chain: A (free) open-source N64 development toolchain.
 # Copyright 2014-2018 Tyler J. Stachecki <stachecki.tyler@gmail.com>
-# modified for N64-TOOLS by Robin Jones
+# Modified for N64-TOOLS by Robin Jones
 #
 # This file is subject to the terms and conditions defined in
 # 'LICENSE', which is part of this source code package.
 #
 
 GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
-="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
+MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz"
@@ -161,7 +161,7 @@ fi
 
 if [ ! -f stamps/gcc-build ]; then
   pushd gcc-build
-  make --jobs=2 all-gcc
+  make --jobs=4 all-gcc
   popd
 
   touch stamps/gcc-build
@@ -214,7 +214,7 @@ fi
 
 if [ ! -f stamps/make-build ]; then
   pushd make-build
-  make --jobs=2
+  make --jobs=4
   popd
 
   touch stamps/make-build
