@@ -13,10 +13,13 @@ set -eu
 #
 
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
-GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz"
+GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz" #Issues with 11.x for canadian cross, wait for 11.3 or 12.x
 MAKE="https://ftp.gnu.org/gnu/make/make-4.3.tar.gz"
 NEWLIB="https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz"
 GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.gz"
+
+BUILD=${BUILD:-x86_64-linux-gnu}
+HOST=${HOST:-x86_64-linux-gnu}
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR} && mkdir -p {stamps,tarballs}
@@ -37,6 +40,8 @@ fi
 if [ ! -f stamps/binutils-configure ]; then
   pushd binutils-build
   ../binutils-source/configure \
+    --build="$BUILD" \
+    --host="$HOST" \
     --prefix="${SCRIPT_DIR}" \
     --with-lib-path="${SCRIPT_DIR}/lib" \
     --target=mips64-elf --with-cpu=mips64vr4300 \
@@ -84,6 +89,8 @@ fi
 if [ ! -f stamps/gcc-configure ]; then
   pushd gcc-build
   ../gcc-source/configure \
+    --build="$BUILD" \
+    --host="$HOST" \
     --prefix="${SCRIPT_DIR}" \
     --target=mips64-elf --with-arch=vr4300 \
     --with-tune=vr4300 \
@@ -155,6 +162,8 @@ fi
 if [ ! -f stamps/make-configure ]; then
   pushd make-build
   ../make-source/configure \
+    --build="$BUILD" \
+    --host="$HOST" \
     --prefix="${SCRIPT_DIR}" \
     --disable-largefile \
     --disable-nls \
@@ -211,6 +220,8 @@ if [ ! -f stamps/newlib-configure ]; then
   pushd newlib-build
     CFLAGS="-O2 -DHAVE_ASSERT_FUNC -fomit-frame-pointer -ffast-math -fstrict-aliasing" \
         ../newlib-source/configure \
+        --build="$BUILD" \
+        --host="$HOST" \
         --disable-bootstrap \
         --disable-build-poststage1-with-cxx \
         --disable-build-with-cxx \
@@ -283,6 +294,8 @@ if [ ! -f stamps/gdb-configure ]; then
     CFLAGS="" LDFLAGS="" \
         ../gdb-source/configure \
         --disable-werror \
+        --build="$BUILD" \
+        --host="$HOST" \
         --prefix="${SCRIPT_DIR}" \
         --target=mips64-elf --with-arch=vr4300
          popd
@@ -310,6 +323,6 @@ rm -rf "${SCRIPT_DIR}"/../tools/tarballs
 rm -rf "${SCRIPT_DIR}"/../tools/*-source
 rm -rf "${SCRIPT_DIR}"/../tools/*-build
 rm -rf "${SCRIPT_DIR}"/../tools/stamps
-rm -rf "${SCRIPT_DIR}"/build-linux64-toolchain.sh
+rm -rf "${SCRIPT_DIR}"/build-linux64-toolchain.sh # TODO: is it wise to delete ones self?!
 exit 0
 
