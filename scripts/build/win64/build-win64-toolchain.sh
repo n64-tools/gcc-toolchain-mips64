@@ -6,25 +6,28 @@ set -eu
 #
 # n64chain: A (free) open-source N64 development toolchain.
 # Copyright 2014-2018 Tyler J. Stachecki <stachecki.tyler@gmail.com>
-# modified for N64-TOOLS by Robin Jones
+# Modified for N64-TOOLS by Robin Jones
 #
 # This file is subject to the terms and conditions defined in
 # 'LICENSE', which is part of this source code package.
 #
 
-BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.bz2"
-GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz"
-GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.bz2"
-MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz"
+GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
-MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.bz2"
-NEWLIB="https://sourceware.org/pub/newlib/newlib-3.3.0.tar.gz"
-GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.1.tar.gz"
+MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
+BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
+GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz" #Issues with 11.x for canadian cross, wait for 11.3 or 12.x
+MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz" # See what patches are needed from https://github.com/mbuilov/gnumake-windows for 4.3!
+NEWLIB="https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz"
+GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.gz"
+
+BUILD=${BUILD:-x86_64-linux-gnu}
+HOST=${HOST:-x86_64-w64-mingw32}
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR} && mkdir -p {stamps,tarballs}
 
-export PATH="${PATH}:${SCRIPT_DIR}/bin"
+export PATH="${PATH}:${SCRIPT_DIR}/bin:${SCRIPT_DIR}/../linux64/bin"
 
 if [ ! -f stamps/binutils-download ]; then
   wget "${BINUTILS}" -O "tarballs/$(basename ${BINUTILS})"
@@ -40,11 +43,11 @@ fi
 if [ ! -f stamps/binutils-configure ]; then
   pushd binutils-build
   ../binutils-source/configure \
-    --build=x86_64-linux-gnu \
-    --host=x86_64-w64-mingw32 \
+    --build="$BUILD" \
+    --host="$HOST" \
     --prefix="${SCRIPT_DIR}" \
     --with-lib-path="${SCRIPT_DIR}/lib" \
-    --target=mips64-elf --with-arch=vr4300 \
+    --target=mips64-elf --with-cpu=mips64vr4300 \
     --enable-64-bit-bfd \
     --enable-plugins \
     --enable-shared \
@@ -61,7 +64,7 @@ fi
 
 if [ ! -f stamps/binutils-build ]; then
   pushd binutils-build
-  make --jobs=2
+  make --jobs=4
   popd
 
   touch stamps/binutils-build
@@ -69,7 +72,7 @@ fi
 
 if [ ! -f stamps/binutils-install ]; then
   pushd binutils-build
-  make install
+  make install-strip
   popd
 
   touch stamps/binutils-install
@@ -122,10 +125,11 @@ fi
 if [ ! -f stamps/gcc-configure ]; then
   pushd gcc-build
   ../gcc-source/configure \
-    --build=x86_64-linux-gnu \
-    --host=x86_64-w64-mingw32 \
+    --build="$BUILD" \
+    --host="$HOST" \
     --prefix="${SCRIPT_DIR}" \
     --target=mips64-elf --with-arch=vr4300 \
+    --with-tune=vr4300 \
     --enable-languages=c,c++ --without-headers --with-newlib \
     --with-gnu-as=${SCRIPT_DIR}/bin/mips64-elf-as.exe \
     --with-gnu-ld=${SCRIPT_DIR}/bin/mips64-elf-ld.exe \
@@ -160,7 +164,7 @@ fi
 
 if [ ! -f stamps/gcc-build ]; then
   pushd gcc-build
-  make --jobs=2 all-gcc
+  make --jobs=4 all-gcc
   popd
 
   touch stamps/gcc-build
@@ -168,7 +172,7 @@ fi
 
 if [ ! -f stamps/gcc-install ]; then
   pushd gcc-build
-  make install-gcc
+  make install-strip-gcc
   popd
 
   # While not necessary, this is still a good idea.
@@ -200,8 +204,8 @@ fi
 if [ ! -f stamps/make-configure ]; then
   pushd make-build
   ../make-source/configure \
-    --build=x86_64-linux-gnu \
-    --host=x86_64-w64-mingw32 \
+    --build="$BUILD" \
+    --host="$HOST" \
     --prefix="${SCRIPT_DIR}" \
     --disable-largefile \
     --disable-nls \
@@ -213,7 +217,7 @@ fi
 
 if [ ! -f stamps/make-build ]; then
   pushd make-build
-  make --jobs=2
+  make --jobs=4
   popd
 
   touch stamps/make-build
@@ -256,10 +260,10 @@ fi
 
 if [ ! -f stamps/newlib-configure ]; then
   pushd newlib-build
-    CFLAGS="-O2 -fomit-frame-pointer -ffast-math -fstrict-aliasing" \
+    CFLAGS="-O2 -DHAVE_ASSERT_FUNC -fomit-frame-pointer -ffast-math -fstrict-aliasing" \
         ../newlib-source/configure \
-        --build=x86_64-linux-gnu \
-        --host=x86_64-w64-mingw32 \
+        --build="$BUILD" \
+        --host="$HOST" \
         --disable-bootstrap \
         --disable-build-poststage1-with-cxx \
         --disable-build-with-cxx \
@@ -269,6 +273,8 @@ if [ ! -f stamps/newlib-configure ]; then
         --disable-libquadmath \
         --disable-libquadmath-support \
         --disable-libssp \
+        --disable-threads \
+        --disable-werror \
         --disable-maintainer-mode \
         --disable-malloc-debugging \
         --disable-multilib \
@@ -287,7 +293,7 @@ if [ ! -f stamps/newlib-configure ]; then
         --enable-newlib-io-pos-args \
         --enable-newlib-reent-small \
         --prefix="${SCRIPT_DIR}" \
-        --target=mips64-elf --with-arch=vr4300 \
+        --target=mips64-elf --with-cpu=mips64vr4300 \
         --with-endian=little \
         --without-cloog \
         --without-gmp \
@@ -330,8 +336,8 @@ if [ ! -f stamps/gdb-configure ]; then
     CFLAGS="" LDFLAGS="" \
         ../gdb-source/configure \
         --disable-werror \
-        --build=x86_64-linux-gnu \
-        --host=x86_64-w64-mingw32 \
+        --build="$BUILD" \
+        --host="$HOST" \
         --prefix="${SCRIPT_DIR}" \
         --target=mips64-elf --with-arch=vr4300
          popd
@@ -360,9 +366,11 @@ if [ ! -f stamps/gdb-install ]; then
   touch stamps/gdb-install
 fi
 
-rm -rf "${SCRIPT_DIR}"/../tools/tarballs
-rm -rf "${SCRIPT_DIR}"/../tools/*-source
-rm -rf "${SCRIPT_DIR}"/../tools/*-build
-rm -rf "${SCRIPT_DIR}"/../tools/stamps
+rm -rf "${SCRIPT_DIR}"/tarballs
+rm -rf "${SCRIPT_DIR}"/*-source
+rm -rf "${SCRIPT_DIR}"/*-build
+rm -rf "${SCRIPT_DIR}"/stamps
+rm -rf "${SCRIPT_DIR}"/make-*.patch
+rm -rf "${SCRIPT_DIR}"/x86_64-w64-mingw32
 exit 0
 
