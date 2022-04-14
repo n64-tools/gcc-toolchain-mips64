@@ -3,7 +3,7 @@ trigger:
     include: 
       - master
       - develop*
-      - release-*
+      - release*
       - refs/tags/*
 
 pr:
@@ -25,14 +25,6 @@ steps:
   displayName: 'Install Required Packages'
   continueOnError: false
 
-# Generate a changelog (not currently that helpful (and not required for local builds)).
-- bash: |
-    cd $BUILD_SOURCESDIRECTORY
-    touch "CHANGELOG.txt"
-    git log --oneline --decorate > CHANGELOG.txt
-  displayName: 'Create Changelog'
-  continueOnError: false
-
 # Build the mips64 GCC toolchain against linux and compress it ready for upload (local builds could run build.sh).
 - script: |
     cd $BUILD_SOURCESDIRECTORY/scripts/build/linux64
@@ -49,16 +41,16 @@ steps:
   displayName: 'Move linux Artifacts to Staging Directory'
   continueOnError: false
 
-# Publish the compressed linux folder to the to Azure Artifacts/TFS or a file share (not needed for local builds).
-- task: PublishBuildArtifacts@1
-  displayName: Publish linux Build Artifacts
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/linux64/'
-    artifactName: 'binaries/linux64' 
-    publishLocation: 'Container' # Options: container, filePath
-    #targetPath: # Required when publishLocation == FilePath
-    parallel: true # Optional
-    #parallelCount: # Optional
+# # Publish the compressed linux folder to the to Azure Artifacts/TFS or a file share (not needed for local builds).
+# - task: PublishBuildArtifacts@1
+#   displayName: Publish linux Build Artifacts
+#   inputs:
+#     pathtoPublish: '$(Build.ArtifactStagingDirectory)/linux64/'
+#     artifactName: 'binaries/linux64' 
+#     publishLocation: 'Container' # Options: container, filePath
+#     #targetPath: # Required when publishLocation == FilePath
+#     parallel: true # Optional
+#     #parallelCount: # Optional
 
   
 # Build the GCC toolchain against linux (for windows) and compress it (local builds could run build.sh).
