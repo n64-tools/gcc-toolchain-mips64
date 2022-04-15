@@ -14,7 +14,7 @@ set -eu
 
 # parallel make
 NUMCPUS=`grep -c '^processor' /proc/cpuinfo` #$(nproc)
-MAKEJOB_PARALLEL='--jobs="$NUMCPUS" --load-average="$NUMCPUS"'
+MAKEJOB_PARALLEL="--jobs=$NUMCPUS --load-average=$NUMCPUS"
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz" #Issues with 11.x for canadian cross, wait for 11.3 or 12.x
 MAKE="https://ftp.gnu.org/gnu/make/make-4.3.tar.gz"
