@@ -12,6 +12,9 @@ set -eu
 # 'LICENSE', which is part of this source code package.
 #
 
+# parallel make
+NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
+MAKEJOB_PARALLEL='--jobs=$NUMCPUS --load-average=$NUMCPUS'
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz" #Issues with 11.x for canadian cross, wait for 11.3 or 12.x
 MAKE="https://ftp.gnu.org/gnu/make/make-4.3.tar.gz"
@@ -61,7 +64,7 @@ fi
 
 if [ ! -f stamps/binutils-build ]; then
   pushd binutils-build
-  make --jobs=4
+  make $MAKEJOB_PARALLEL
   popd
 
   touch stamps/binutils-build
@@ -128,7 +131,7 @@ fi
 
 if [ ! -f stamps/gcc-build ]; then
   pushd gcc-build
-  make --jobs=4 all-gcc
+  make $MAKEJOB_PARALLEL all-gcc
   popd
 
   touch stamps/gcc-build
@@ -175,7 +178,7 @@ fi
 
 if [ ! -f stamps/make-build ]; then
   pushd make-build
-  make --jobs=4
+  make $MAKEJOB_PARALLEL
   popd
 
   touch stamps/make-build
@@ -191,7 +194,7 @@ fi
 
 if [ ! -f stamps/libgcc-build ]; then
   pushd gcc-build
-  make --jobs=4 all-target-libgcc
+  make $MAKEJOB_PARALLEL all-target-libgcc
   popd
 
   touch stamps/libgcc-build
@@ -264,7 +267,7 @@ fi
 
 if [ ! -f stamps/newlib-build ]; then
   pushd newlib-build
-  make --jobs=4
+  make $MAKEJOB_PARALLEL
   popd
 
   touch stamps/newlib-build
@@ -305,7 +308,7 @@ fi
 
 if [ ! -f stamps/gdb-build ]; then
   pushd gdb-build
-  make --jobs=4
+  make $MAKEJOB_PARALLEL
   popd
 
   touch stamps/gdb-build

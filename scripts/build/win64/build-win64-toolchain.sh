@@ -12,6 +12,10 @@ set -eu
 # 'LICENSE', which is part of this source code package.
 #
 
+# parallel make
+NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
+MAKEJOB_PARALLEL='--jobs=$NUMCPUS --load-average=$NUMCPUS'
+
 GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
@@ -64,7 +68,7 @@ fi
 
 if [ ! -f stamps/binutils-build ]; then
   pushd binutils-build
-  make --jobs=4
+  make $MAKEJOB_PARALLEL
   popd
 
   touch stamps/binutils-build
@@ -164,7 +168,7 @@ fi
 
 if [ ! -f stamps/gcc-build ]; then
   pushd gcc-build
-  make --jobs=4 all-gcc
+  make $MAKEJOB_PARALLEL all-gcc
   popd
 
   touch stamps/gcc-build
@@ -196,8 +200,7 @@ fi
 
 if [ ! -f stamps/make-patch ]; then
   pushd make-source
-  MAKE_PATCH_FILES="../make-*.patch"
-  for f in $MAKE_PATCH_FILES
+  for f in "../make-*.patch"
   do
     patch -p1 -i "$f" # Apply patches if they exist in the folder
   done
@@ -221,7 +224,7 @@ fi
 
 if [ ! -f stamps/make-build ]; then
   pushd make-build
-  make --jobs=4
+  make $MAKEJOB_PARALLEL
   popd
 
   touch stamps/make-build
@@ -237,7 +240,7 @@ fi
 
 if [ ! -f stamps/libgcc-build ]; then
   pushd gcc-build
-  make --jobs=4 all-target-libgcc
+  make $MAKEJOB_PARALLEL all-target-libgcc
   popd
 
   touch stamps/libgcc-build
@@ -310,7 +313,7 @@ fi
 
 if [ ! -f stamps/newlib-build ]; then
   pushd newlib-build
-  make --jobs=4
+  make $MAKEJOB_PARALLEL
   popd
 
   touch stamps/newlib-build
@@ -351,7 +354,7 @@ fi
 
 if [ ! -f stamps/gdb-build ]; then
   pushd gdb-build
-  make --jobs=4
+  make $MAKEJOB_PARALLEL
   popd
 
   touch stamps/gdb-build
