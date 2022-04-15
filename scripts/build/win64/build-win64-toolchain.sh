@@ -200,9 +200,10 @@ fi
 
 if [ ! -f stamps/make-patch ]; then
   pushd make-source
-  for f in "../make-*.patch"
+  MAKE_FILE_PATCHES=("../"make-*.patch)
+  for f in "${MAKE_FILE_PATCHES[@]}"
   do
-    patch -p1 -i "$f" # Apply patches if they exist in the folder
+    patch -p1 -i "${f}" # Apply patches if they exist in the folder
   done
   popd
   touch stamps/make-patch
