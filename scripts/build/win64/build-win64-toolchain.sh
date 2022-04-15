@@ -13,8 +13,8 @@ set -eu
 #
 
 # parallel make
-NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
-MAKEJOB_PARALLEL='--jobs=$NUMCPUS --load-average=$NUMCPUS'
+NUMCPUS=`grep -c '^processor' /proc/cpuinfo` #$(nproc)
+MAKEJOB_PARALLEL='--jobs="$NUMCPUS" --load-average="$NUMCPUS"'
 
 GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
