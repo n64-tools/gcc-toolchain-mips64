@@ -159,13 +159,6 @@ if [ ! -f stamps/make-extract ]; then
   touch stamps/make-extract
 fi
 
-if [ ! -f stamps/make-patch ]; then
-  pushd make-source
-  patch -p1 -i ../make-*.patch # Apply patches if they exist in the folder
-  popd
-  touch stamps/make-patch
-fi
-
 if [ ! -f stamps/make-configure ]; then
   pushd make-build
   ../make-source/configure \
@@ -330,6 +323,5 @@ rm -rf "${SCRIPT_DIR}"/tarballs
 rm -rf "${SCRIPT_DIR}"/*-source
 rm -rf "${SCRIPT_DIR}"/*-build
 rm -rf "${SCRIPT_DIR}"/stamps
-rm -rf "${SCRIPT_DIR}"/make-*.patch
 exit 0
 

@@ -17,7 +17,7 @@ MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz" #Issues with 11.x for canadian cross, wait for 11.3 or 12.x
-MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz" # See what patches are needed from https://github.com/mbuilov/gnumake-windows for 4.3!
+MAKE="https://ftp.gnu.org/gnu/make/make-4.3.tar.gz" # patches are provided from https://github.com/mbuilov/gnumake-windows for 4.3!
 NEWLIB="https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz"
 GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.gz"
 
