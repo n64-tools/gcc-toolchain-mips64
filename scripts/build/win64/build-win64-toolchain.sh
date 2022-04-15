@@ -196,7 +196,11 @@ fi
 
 if [ ! -f stamps/make-patch ]; then
   pushd make-source
-  patch -p1 -i ../make-*.patch # Apply patches if they exist in the folder
+  MAKE_PATCH_FILES="../make-*.patch"
+  for f in $MAKE_PATCH_FILES
+  do
+    patch -p1 -i "$f" # Apply patches if they exist in the folder
+  done
   popd
   touch stamps/make-patch
 fi
