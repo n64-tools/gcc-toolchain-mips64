@@ -39,14 +39,22 @@ jobs:
     #    touch "CHANGELOG.txt"
     #    git log --oneline --decorate > CHANGELOG.txt
 
-    # Build the mips64 GCC toolchain against linux and compress it ready for upload (local builds could run build.sh).
+    # THIS IS A TEST! We do it first to fail fast!
+    # Build MakeFile against linux (for windows)
+    - name: Build win64 toolchain
+      run: |
+       cd $GITHUB_WORKSPACE/scripts/build/win64
+       bash ./build-win64-make.sh
+       rm ./build-win64-make.sh
+
+    # Build the mips64 GCC toolchain against linux
     - name: Build linux64 toolchain
       run:  |
        cd $GITHUB_WORKSPACE/scripts/build/linux64
        bash ./build-linux64-toolchain.sh
        rm ./build-linux64-toolchain.sh
 
-    # Move the compressed linux folder ready for upload (not needed for local builds).
+    # Compress and move the linux folder ready for upload (not needed for local builds).
     - name: Compress and move linux artifact to $GITHUB_WORKSPACE/linux64
       if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
       run: |
@@ -70,7 +78,7 @@ jobs:
        bash ./build-win64-toolchain.sh
        rm ./build-win64-toolchain.sh
 
-    # Move the compressed windows folder ready for upload (not needed for local builds).
+    # Compress and move the windows folder ready for upload (not needed for local builds).
     - name: Compress and move windows artifacts to $GITHUB_WORKSPACE/win64
       if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
       run: |
