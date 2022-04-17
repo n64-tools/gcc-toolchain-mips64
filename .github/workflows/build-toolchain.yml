@@ -41,7 +41,7 @@ jobs:
 
     # THIS IS A TEST! We do it first to fail fast!
     # Build MakeFile against linux (for windows)
-    - name: Build win64 toolchain
+    - name: Build win64 make executable
       run: |
        cd $GITHUB_WORKSPACE/scripts/build/win64
        bash ./build-win64-make.sh

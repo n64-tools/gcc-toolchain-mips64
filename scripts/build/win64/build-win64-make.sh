@@ -19,6 +19,11 @@ MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz" # patches are provided fro
 BUILD=${BUILD:-x86_64-linux-gnu}
 HOST=${HOST:-x86_64-w64-mingw32}
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd ${SCRIPT_DIR} && mkdir -p {stamps,tarballs}
+
+export PATH="${PATH}:${SCRIPT_DIR}/bin:${SCRIPT_DIR}/../linux64/bin"
+
 if [ ! -f stamps/make-download ]; then
   wget "${MAKE}" -O "tarballs/$(basename ${MAKE})"
   touch stamps/make-download
