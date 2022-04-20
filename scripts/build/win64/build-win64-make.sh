@@ -38,17 +38,17 @@ fi
 if [ ! -f stamps/make-patch ]; then
   pushd make-source
     patch -p1 -i ../make-4.3-error.patch
-    patch -p1 -i ../make-4.3-expand.patch
-    patch -p1 -i ../make-4.3-filter.patch
-    patch -p1 -i ../make-4.3-getloadavg-msvc.patch
-    patch -p1 -i ../make-4.3-no-builtin-warn-undef.patch
-    patch -p1 -i ../make-4.3-sort.patch
-    patch -p1 -i ../make-4.3-sub_proc.patch
-    patch -p1 -i ../make-4.3-SV49841.patch
-    patch -p1 -i ../make-4.3-warn-env.patch
-    patch -p1 -i ../make-4.3-warn-noargs.patch
-    patch -p1 -i ../make-4.3-win32-colors.patch
-    patch -p1 -i ../make-4.3-win32-ctrl-c.patch
+    #patch -p1 -i ../make-4.3-expand.patch
+    #patch -p1 -i ../make-4.3-filter.patch
+    #patch -p1 -i ../make-4.3-getloadavg-msvc.patch
+    #patch -p1 -i ../make-4.3-no-builtin-warn-undef.patch
+    #patch -p1 -i ../make-4.3-sort.patch
+    #patch -p1 -i ../make-4.3-sub_proc.patch
+    #patch -p1 -i ../make-4.3-SV49841.patch
+    #patch -p1 -i ../make-4.3-warn-env.patch
+    #patch -p1 -i ../make-4.3-warn-noargs.patch
+    #patch -p1 -i ../make-4.3-win32-colors.patch
+    #patch -p1 -i ../make-4.3-win32-ctrl-c.patch
 
     # patch -p1 -i ../make-4.2.1.patch
   popd
