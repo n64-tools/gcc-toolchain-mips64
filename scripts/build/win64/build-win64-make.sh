@@ -37,8 +37,8 @@ fi
 
 if [ ! -f stamps/make-patch ]; then
   pushd make-source
-    patch -p1 -i ../make-4.3-error.patch
-    #patch -p1 -i ../make-4.3-expand.patch
+    # patch -p1 -i ../make-4.3-error.patch # Broken make[1]: *** [Makefile:1356: src/remote-stub.o] Error 1
+    patch -p1 -i ../make-4.3-expand.patch
     #patch -p1 -i ../make-4.3-filter.patch
     #patch -p1 -i ../make-4.3-getloadavg-msvc.patch
     #patch -p1 -i ../make-4.3-no-builtin-warn-undef.patch
