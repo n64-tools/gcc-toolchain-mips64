@@ -63,7 +63,10 @@ if [ ! -f stamps/make-configure ]; then
     --host="$HOST" \
     --disable-largefile \
     --disable-nls \
-    --disable-rpath
+    --without-guile \
+    --without-libintl-prefix \
+    --without-libiconv-prefix \
+    --disable-rpath \
   popd
 
   touch stamps/make-configure
