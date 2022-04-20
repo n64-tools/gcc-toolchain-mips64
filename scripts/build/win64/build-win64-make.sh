@@ -10,9 +10,9 @@ set -eu
 # 'LICENSE', which is part of this source code package.
 #
 
-# parallel make
-NUMCPUS=`grep -c '^processor' /proc/cpuinfo` #$(nproc)
-MAKEJOB_PARALLEL="--jobs=$NUMCPUS --load-average=$NUMCPUS"
+# Parallel GCC build jobs
+NUM_CPU_THREADS=`grep -c '^processor' /proc/cpuinfo` #$(nproc)
+BUILD_NUM_JOBS="--jobs=$NUM_CPU_THREADS --load-average=$NUM_CPU_THREADS"
 
 MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz" # patches for 4.3 could be provided from https://github.com/mbuilov/gnumake-windows however, there are currently issues with canadian cross!
 
@@ -58,7 +58,7 @@ fi
 
 if [ ! -f stamps/make-build ]; then
   pushd make-build
-  make $MAKEJOB_PARALLEL
+  make $BUILD_NUM_JOBS
   popd
 
   touch stamps/make-build

@@ -12,9 +12,9 @@ set -eu
 # 'LICENSE', which is part of this source code package.
 #
 
-# parallel jobs
-NUMCPUS=`grep -c '^processor' /proc/cpuinfo` #$(nproc)
-MAKEJOB_PARALLEL="--jobs=$NUMCPUS --load-average=$NUMCPUS"
+# Parallel GCC build jobs
+NUM_CPU_THREADS=`grep -c '^processor' /proc/cpuinfo` #$(nproc)
+BUILD_NUM_JOBS="--jobs=$NUM_CPU_THREADS --load-average=$NUM_CPU_THREADS"
 
 GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
@@ -67,7 +67,7 @@ fi
 
 if [ ! -f stamps/binutils-build ]; then
   pushd binutils-build
-  make $MAKEJOB_PARALLEL
+  make $BUILD_NUM_JOBS
   popd
 
   touch stamps/binutils-build
@@ -167,7 +167,7 @@ fi
 
 if [ ! -f stamps/gcc-build ]; then
   pushd gcc-build
-  make $MAKEJOB_PARALLEL all-gcc
+  make $BUILD_NUM_JOBS all-gcc
   popd
 
   touch stamps/gcc-build
@@ -188,7 +188,7 @@ fi
 
 if [ ! -f stamps/libgcc-build ]; then
   pushd gcc-build
-  make $MAKEJOB_PARALLEL all-target-libgcc
+  make $BUILD_NUM_JOBS all-target-libgcc
   popd
 
   touch stamps/libgcc-build
@@ -261,7 +261,7 @@ fi
 
 if [ ! -f stamps/newlib-build ]; then
   pushd newlib-build
-  make $MAKEJOB_PARALLEL
+  make $BUILD_NUM_JOBS
   popd
 
   touch stamps/newlib-build
@@ -302,7 +302,7 @@ fi
 
 if [ ! -f stamps/gdb-build ]; then
   pushd gdb-build
-  make $MAKEJOB_PARALLEL
+  make $BUILD_NUM_JOBS
   popd
 
   touch stamps/gdb-build
