@@ -14,7 +14,7 @@ set -eu
 NUMCPUS=`grep -c '^processor' /proc/cpuinfo` #$(nproc)
 MAKEJOB_PARALLEL="--jobs=$NUMCPUS --load-average=$NUMCPUS"
 
-MAKE="https://ftp.gnu.org/gnu/make/make-4.3.tar.gz" # patches are provided from https://github.com/mbuilov/gnumake-windows for 4.3!
+MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz" # patches for 4.3 could be provided from https://github.com/mbuilov/gnumake-windows however, there are currently issues with canadian cross!
 
 BUILD=${BUILD:-x86_64-linux-gnu}
 HOST=${HOST:-x86_64-w64-mingw32}
@@ -37,20 +37,7 @@ fi
 
 if [ ! -f stamps/make-patch ]; then
   pushd make-source
-    # patch -p1 -i ../make-4.3-error.patch # Broken make[1]: *** [Makefile:1356: src/remote-stub.o] Error 1
-    patch -p1 -i ../make-4.3-expand.patch
-    #patch -p1 -i ../make-4.3-filter.patch
-    #patch -p1 -i ../make-4.3-getloadavg-msvc.patch
-    #patch -p1 -i ../make-4.3-no-builtin-warn-undef.patch
-    #patch -p1 -i ../make-4.3-sort.patch
-    #patch -p1 -i ../make-4.3-sub_proc.patch
-    #patch -p1 -i ../make-4.3-SV49841.patch
-    #patch -p1 -i ../make-4.3-warn-env.patch
-    #patch -p1 -i ../make-4.3-warn-noargs.patch
-    #patch -p1 -i ../make-4.3-win32-colors.patch
-    #patch -p1 -i ../make-4.3-win32-ctrl-c.patch
-
-    # patch -p1 -i ../make-4.2.1.patch
+    patch -p1 -i ../make-*.patch
   popd
   touch stamps/make-patch
 fi
@@ -63,10 +50,7 @@ if [ ! -f stamps/make-configure ]; then
     --host="$HOST" \
     --disable-largefile \
     --disable-nls \
-    --without-guile \
-    --without-libintl-prefix \
-    --without-libiconv-prefix \
-    --disable-rpath \
+    --disable-rpath
   popd
 
   touch stamps/make-configure
