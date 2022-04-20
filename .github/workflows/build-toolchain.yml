@@ -39,7 +39,7 @@ jobs:
     #    touch "CHANGELOG.txt"
     #    git log --oneline --decorate > CHANGELOG.txt
 
-    # THIS IS A TEST! We do it first to fail fast!
+    # THIS IS A TEST! We do it first to fail fast (as most unknown)!
     # Build MakeFile against linux (for windows)
     - name: Build win64 make executable
       run: |

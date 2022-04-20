@@ -21,7 +21,6 @@ MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
 GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz" #Issues with 11.x for canadian cross, wait for 11.3 or 12.x
-#MAKE="https://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz" # patches are provided from https://github.com/mbuilov/gnumake-windows for 4.3!
 NEWLIB="https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz"
 GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.gz"
 
@@ -187,59 +186,6 @@ if [ ! -f stamps/gcc-install ]; then
   touch stamps/gcc-install
 fi
 
-# if [ ! -f stamps/make-download ]; then
-#   wget "${MAKE}" -O "tarballs/$(basename ${MAKE})"
-#   touch stamps/make-download
-# fi
-
-# if [ ! -f stamps/make-extract ]; then
-#   mkdir -p make-{build,source}
-#   tar -xf tarballs/$(basename ${MAKE}) -C make-source --strip 1
-#   touch stamps/make-extract
-# fi
-
-# if [ ! -f stamps/make-patch ]; then
-#   pushd make-source
-#   # MAKE_FILE_PATCHES=("../"make-*.patch)
-#   # for f in "${MAKE_FILE_PATCHES[@]}"
-#   # do
-#   #   patch -p1 -i "${f}" # Apply patches if they exist in the folder
-#   # done
-#   patch -p1 -i ../make-*.patch # Apply patches if they exist in the folder
-#   popd
-#   touch stamps/make-patch
-# fi
-
-# if [ ! -f stamps/make-configure ]; then
-#   pushd make-build
-#   ../make-source/configure \
-#     --prefix="${SCRIPT_DIR}" \
-#     --build="$BUILD" \
-#     --host="$HOST" \
-#     --disable-largefile \
-#     --disable-nls \
-#     --disable-rpath
-#   popd
-
-#   touch stamps/make-configure
-# fi
-
-# if [ ! -f stamps/make-build ]; then
-#   pushd make-build
-#   make $MAKEJOB_PARALLEL
-#   popd
-
-#   touch stamps/make-build
-# fi
-
-# if [ ! -f stamps/make-install ]; then
-#   pushd make-build
-#   make install
-#   popd
-
-#   touch stamps/make-install
-# fi
-
 if [ ! -f stamps/libgcc-build ]; then
   pushd gcc-build
   make $MAKEJOB_PARALLEL all-target-libgcc
@@ -379,7 +325,6 @@ rm -rf "${SCRIPT_DIR}"/tarballs
 rm -rf "${SCRIPT_DIR}"/*-source
 rm -rf "${SCRIPT_DIR}"/*-build
 rm -rf "${SCRIPT_DIR}"/stamps
-rm -rf "${SCRIPT_DIR}"/make-*.patch
 rm -rf "${SCRIPT_DIR}"/x86_64-w64-mingw32
 exit 0
 

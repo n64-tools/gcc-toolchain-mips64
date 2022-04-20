@@ -37,12 +37,20 @@ fi
 
 if [ ! -f stamps/make-patch ]; then
   pushd make-source
-  # MAKE_FILE_PATCHES=("../"make-*.patch)
-  # for f in "${MAKE_FILE_PATCHES[@]}"
-  # do
-  #   patch -p1 -i "${f}" # Apply patches if they exist in the folder
-  # done
-  patch -p1 -i ../make-4.2*.patch # Apply patches if they exist in the folder
+    # patch -p1 -i ../make-4.3-error.patch
+    # patch -p1 -i ../make-4.3-expand.patch
+    # patch -p1 -i ../make-4.3-filter.patch
+    # patch -p1 -i ../make-4.3-getloadavg-msvc.patch
+    # patch -p1 -i ../make-4.3-no-builtin-warn-undef.patch
+    # patch -p1 -i ../make-4.3-sort.patch
+    # patch -p1 -i ../make-4.3-sub_proc.patch
+    # patch -p1 -i ../make-4.3-SV49841.patch
+    # patch -p1 -i ../make-4.3-warn-env.patch
+    # patch -p1 -i ../make-4.3-warn-noargs.patch
+    # patch -p1 -i ../make-4.3-win32-colors.patch
+    # patch -p1 -i ../make-4.3-win32-ctrl-c.patch
+
+    patch -p1 -i ../make-4.2.1.patch
   popd
   touch stamps/make-patch
 fi
@@ -76,3 +84,10 @@ if [ ! -f stamps/make-install ]; then
 
   touch stamps/make-install
 fi
+
+rm -rf "${SCRIPT_DIR}"/make-*.patch
+rm -rf "${SCRIPT_DIR}"/tarballs
+rm -rf "${SCRIPT_DIR}"/*-source
+rm -rf "${SCRIPT_DIR}"/*-build
+rm -rf "${SCRIPT_DIR}"/stamps
+exit 0
