@@ -327,4 +327,3 @@ rm -rf "${SCRIPT_DIR}"/*-build
 rm -rf "${SCRIPT_DIR}"/stamps
 rm -rf "${SCRIPT_DIR}"/x86_64-w64-mingw32
 exit 0
-
