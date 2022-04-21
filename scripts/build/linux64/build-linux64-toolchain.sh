@@ -2,14 +2,15 @@
 set -eu
 
 #
-# tools/build-linux64-toolchain.sh: Linux toolchain build script.
+# N64 linux GCC/BINUTILS/NEWLIB/GDB toolchain build script.
 #
-# n64chain: A (free) open-source N64 development toolchain.
-# Copyright 2014-2018 Tyler J. Stachecki <stachecki.tyler@gmail.com>
-# Heavily modified for N64-TOOLS by Robin Jones
+# Attributions: 
+# Tyler J. Stachecki <stachecki.tyler@gmail.com>
+# Robin Jones (NetworkFusion/JonesAlmighty)
 #
-# This file is subject to the terms and conditions defined in
-# 'LICENSE', which is part of this source code package.
+# This script builds library source covered under the 'GNU LESSER GENERAL PUBLIC LICENSE'
+# However, the original source is not changed.
+# The repo 'LICENSE' is added for assurance.
 #
 
 # Parallel GCC build jobs
