@@ -20,9 +20,9 @@ GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
-GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz" #Issues with 11.x for canadian cross, wait for 11.3 or 12.x
+GCC="https://ftp.gnu.org/gnu/gcc/gcc-11.3.0/gcc-11.3.0.tar.gz"
 NEWLIB="https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz"
-GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.gz"
+GDB="https://ftp.gnu.org/gnu/gdb/gdb-11.2.tar.gz"
 
 BUILD=${BUILD:-x86_64-linux-gnu}
 HOST=${HOST:-x86_64-w64-mingw32}

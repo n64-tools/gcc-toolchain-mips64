@@ -17,9 +17,9 @@ NUM_CPU_THREADS=`grep -c '^processor' /proc/cpuinfo` #$(nproc)
 BUILD_NUM_JOBS="--jobs=$NUM_CPU_THREADS --load-average=$NUM_CPU_THREADS"
 
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
-GCC="https://ftp.gnu.org/gnu/gcc/gcc-11.3.0/gcc-11.3.0.tar.gz" #Issues with 11.x for canadian cross, wait for 11.3 or 12.x
+GCC="https://ftp.gnu.org/gnu/gcc/gcc-11.3.0/gcc-11.3.0.tar.gz"
 NEWLIB="https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz"
-GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.gz"
+GDB="https://ftp.gnu.org/gnu/gdb/gdb-11.2.tar.gz"
 
 BUILD=${BUILD:-x86_64-linux-gnu}
 HOST=${HOST:-x86_64-linux-gnu}
