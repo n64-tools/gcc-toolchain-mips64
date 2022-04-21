@@ -17,11 +17,11 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Depending on Ubuntu version, maybe required for GCC install.
-    - name: Add GCC Repository
-      run: |
-        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-        sudo apt-get -qq update
+    # # Depending on Ubuntu version, maybe required for GCC install.
+    # - name: Add GCC Repository
+    #   run: |
+    #     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    #     sudo apt-get -qq update
 
     # Some of these packages may already be installed, but update just incase (it doesn't hurt)!
     - name: Install Required Packages
