@@ -25,6 +25,15 @@ steps:
   displayName: 'Install Required Packages'
   continueOnError: false
 
+  # We do it first to fail fast (as most unknown)!
+  # Build MakeFile against linux (for windows)
+- script: |
+    cd $GITHUB_WORKSPACE/scripts/build/win64
+    bash ./build-win64-makefile.sh
+    rm ./build-win64-makefile.sh
+  displayName: 'Build win64 makefile executable'
+  continueOnError: false
+
 # Build the mips64 GCC toolchain against linux and compress it ready for upload (local builds could run build.sh).
 - script: |
     cd $BUILD_SOURCESDIRECTORY/scripts/build/linux64

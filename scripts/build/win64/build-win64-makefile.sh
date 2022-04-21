@@ -2,12 +2,14 @@
 set -eu
 
 #
-# tools/build-win64-toolchain.sh: Win64 makefile build script.
+# MakeFile (for windows) build script.
 #
-# for N64-TOOLS by Robin Jones
+# Attributions: 
+# Robin Jones (NetworkFusion/JonesAlmighty)
 #
-# This file is subject to the terms and conditions defined in
-# 'LICENSE', which is part of this source code package.
+# This script builds library source covered under the 'GNU LESSER GENERAL PUBLIC LICENSE'
+# However, the original source is not changed and an OSS patch file is used.
+# The repo 'LICENSE' is added for assurance.
 #
 
 # Parallel GCC build jobs

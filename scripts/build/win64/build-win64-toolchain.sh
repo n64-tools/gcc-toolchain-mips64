@@ -2,14 +2,15 @@
 set -eu
 
 #
-# tools/build-win64-toolchain.sh: Win64 toolchain build script.
+# N64 (for windows) GCC/BINUTILS/NEWLIB/GDB toolchain build script.
 #
-# n64chain: A (free) open-source N64 development toolchain.
-# Copyright 2014-2018 Tyler J. Stachecki <stachecki.tyler@gmail.com>
-# Heavily modified for N64-TOOLS by Robin Jones
+# Attributions: 
+# Tyler J. Stachecki <stachecki.tyler@gmail.com>
+# Robin Jones (NetworkFusion/JonesAlmighty)
 #
-# This file is subject to the terms and conditions defined in
-# 'LICENSE', which is part of this source code package.
+# This script builds library source covered under the 'GNU LESSER GENERAL PUBLIC LICENSE'
+# However, the original source is not changed.
+# The repo 'LICENSE' is added for assurance.
 #
 
 # Parallel GCC build jobs
@@ -20,9 +21,9 @@ GMP="https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz" # No gz file available!
 MPC="https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz"
 MPFR="https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.gz"
 BINUTILS="https://ftp.gnu.org/gnu/binutils/binutils-2.38.tar.gz"
-GCC="https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz" #Issues with 11.x for canadian cross, wait for 11.3 or 12.x
+GCC="https://ftp.gnu.org/gnu/gcc/gcc-11.3.0/gcc-11.3.0.tar.gz"
 NEWLIB="https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz"
-GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.gz"
+GDB="https://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.gz" # fails to x compile on 11.2. requires investigation!
 
 BUILD=${BUILD:-x86_64-linux-gnu}
 HOST=${HOST:-x86_64-w64-mingw32}

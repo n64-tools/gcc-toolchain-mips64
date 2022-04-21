@@ -17,22 +17,24 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Depending on Ubuntu version, maybe required for GCC install.
-    - name: Add GCC Repository
-      run: |
-        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-        sudo apt-get -qq update
+    # # Depending on Ubuntu version, maybe required for GCC install.
+    # - name: Add GCC Repository
+    #   run: |
+    #     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    #     sudo apt-get -qq update
 
     # Some of these packages may already be installed, but update just incase (it doesn't hurt)!
     - name: Install Required Packages
       run: |
         sudo apt-get install -y build-essential software-properties-common
-        sudo apt-get install -y gcc-10
-        sudo apt-get install -y g++-10 mingw-w64 libgmp-dev bison
+        # sudo apt-get install -y gcc-10
+        sudo apt-get install -y mingw-w64
+        # sudo apt-get install -y g++-10
+        # sudo apt-get install -y libgmp-dev bison
         sudo apt-get install -y libmpfr-dev libmpc-dev
         sudo apt-get install -y byacc texinfo
         sudo apt-get install -y zip gzip tar
-    #     sudo apt-gey install -y gcc-9-locales wine wine64 # not actually required, but suggested by the CI
+        # sudo apt-gey install -y gcc-9-locales wine wine64 # not actually required, but suggested by the CI
 
     # # Generate a changelog (not currently that helpful (and not required for local builds)).
     # - name: Create Changelog
@@ -40,13 +42,13 @@ jobs:
     #    touch "CHANGELOG.txt"
     #    git log --oneline --decorate > CHANGELOG.txt
 
-    # THIS IS A TEST! We do it first to fail fast (as most unknown)!
+    # We do it first to fail fast (as most unknown)!
     # Build MakeFile against linux (for windows)
-    - name: Build win64 make executable
+    - name: Build win64 makefile executable
       run: |
        cd $GITHUB_WORKSPACE/scripts/build/win64
-       bash ./build-win64-make.sh
-       rm ./build-win64-make.sh
+       bash ./build-win64-makefile.sh
+       rm ./build-win64-makefile.sh
 
     # Build the mips64 GCC toolchain against linux
     - name: Build linux64 toolchain
