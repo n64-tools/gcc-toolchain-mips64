@@ -2,7 +2,7 @@
 set -eu
 
 #
-# N64  (for windows) GCC/BINUTILS/NEWLIB/GDB toolchain build script.
+# N64 (for windows) GCC/BINUTILS/NEWLIB/GDB toolchain build script.
 #
 # Attributions: 
 # Tyler J. Stachecki <stachecki.tyler@gmail.com>
