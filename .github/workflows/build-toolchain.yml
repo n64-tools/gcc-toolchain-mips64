@@ -32,6 +32,7 @@ jobs:
         sudo apt-get install -y libmpfr-dev libmpc-dev
         sudo apt-get install -y byacc texinfo
         sudo apt-get install -y zip gzip tar
+    #     sudo apt-gey install -y gcc-9-locales wine wine64 # not actually required, but suggested by the CI
 
     # # Generate a changelog (not currently that helpful (and not required for local builds)).
     # - name: Create Changelog
