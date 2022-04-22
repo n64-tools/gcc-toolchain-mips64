@@ -17,21 +17,24 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Depending on Ubuntu version, maybe required for GCC install.
-    - name: Add GCC Repository
-      run: |
-        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-        sudo apt-get -qq update
+    # # Depending on Ubuntu version, maybe required for GCC install.
+    # - name: Add GCC Repository
+    #   run: |
+    #     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    #     sudo apt-get -qq update
 
     # Some of these packages may already be installed, but update just incase (it doesn't hurt)!
     - name: Install Required Packages
       run: |
         sudo apt-get install -y build-essential software-properties-common
-        sudo apt-get install -y gcc-10
-        sudo apt-get install -y g++-10 mingw-w64 libgmp-dev bison
+        # sudo apt-get install -y gcc-10
+        # sudo apt-get install -y g++-10
+        sudo apt-get install -y mingw-w64
+        # sudo apt-get install -y libgmp-dev bison
         sudo apt-get install -y libmpfr-dev libmpc-dev
         sudo apt-get install -y byacc texinfo
         sudo apt-get install -y zip gzip tar
+        # sudo apt-gey install -y gcc-9-locales wine wine64 # not actually required, but suggested by the CI
 
     # # Generate a changelog (not currently that helpful (and not required for local builds)).
     # - name: Create Changelog
@@ -39,14 +42,22 @@ jobs:
     #    touch "CHANGELOG.txt"
     #    git log --oneline --decorate > CHANGELOG.txt
 
-    # Build the mips64 GCC toolchain against linux and compress it ready for upload (local builds could run build.sh).
+    # We do it first to fail fast (as most unknown)!
+    # Build MakeFile against linux (for windows)
+    - name: Build win64 makefile executable
+      run: |
+       cd $GITHUB_WORKSPACE/scripts/build/win64
+       bash ./build-win64-makefile.sh
+       rm ./build-win64-makefile.sh
+
+    # Build the mips64 GCC toolchain against linux
     - name: Build linux64 toolchain
       run:  |
        cd $GITHUB_WORKSPACE/scripts/build/linux64
        bash ./build-linux64-toolchain.sh
        rm ./build-linux64-toolchain.sh
 
-    # Move the compressed linux folder ready for upload (not needed for local builds).
+    # Compress and move the linux folder ready for upload (not needed for local builds).
     - name: Compress and move linux artifact to $GITHUB_WORKSPACE/linux64
       if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
       run: |
@@ -70,7 +81,7 @@ jobs:
        bash ./build-win64-toolchain.sh
        rm ./build-win64-toolchain.sh
 
-    # Move the compressed windows folder ready for upload (not needed for local builds).
+    # Compress and move the windows folder ready for upload (not needed for local builds).
     - name: Compress and move windows artifacts to $GITHUB_WORKSPACE/win64
       if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
       run: |
@@ -98,4 +109,3 @@ jobs:
         linux64/gcc-toolchain-mips64-linux64.tar.gz
         win64/gcc-toolchain-mips64-win64.zip
        # CHANGELOG.txt
-
