@@ -1,3 +1,10 @@
+NOTE: This repo will be updated or deprecated in the near future as the libDragon toolchain now supports the ability to do the same thing using:
+```
+sudo apt-get install -y mingw-w64
+cd ./tools/
+sudo N64_INST=/usr/local/n64/ HOST=x86_64-w64-mingw32 ./build-toolchain.sh
+```
+
 # Windows mips64-gcc-toolchain for the N64
 
 This repo automatically generates the MIPS64 GCC toolchain to allow cross compilation for the N64. 
