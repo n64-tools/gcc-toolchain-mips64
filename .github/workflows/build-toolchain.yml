@@ -158,11 +158,11 @@ jobs:
 #        if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
-        draft: true
-        prerelease: true
-        name: "Vx.x.x-y"
-        #tag_name: "latest"
-        files: |
-          ./**/*.deb
-          ./**/*.rpm
-          ./**/*.zip
+          draft: true
+          prerelease: true
+          name: "Vx.x.x-y"
+          #tag_name: "latest"
+          files: |
+            ./**/*.deb
+            ./**/*.rpm
+            ./**/*.zip
