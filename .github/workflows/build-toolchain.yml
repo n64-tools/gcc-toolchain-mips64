@@ -15,6 +15,8 @@ jobs:
     # targets the oldest ubuntu image available to create valid packages for as many versions possible.
     # TODO: move to using a docker container to support older versions.
     runs-on: ubuntu-20.04
+    outputs:
+      gcc-version: ${{ steps.gcc-version-generator.outputs.GCC_VERSION }}
     strategy:
       fail-fast: false
       matrix:
@@ -128,13 +130,20 @@ jobs:
           Package_Url: https://n64brew.com
           Package_Maintainer: N64 Brew Community
 
-      - name: Publish Windows-x86_64 Build Artifacts
+      - name: Compress Windows-x86_64 Build Artifacts
+        if: ${{ matrix.target-platform == 'Windows-x86_64' }}
+        run: |
+          cd ${{ runner.temp }}/n64-brew/
+          zip -r -q ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64.zip *
+        continue-on-error: true
+
+      - name: Publish Windows-x86_64 Build Artifact
         if: ${{ matrix.target-platform == 'Windows-x86_64' }}
         uses: actions/upload-artifact@v3
         with:
           name: gcc-toolchain-mips64-${{ matrix.target-platform }}
           path: |
-            ${{ runner.temp }}/n64-brew
+            ${{ runner.temp }}/**/*.zip
         continue-on-error: true
 
       - name: Publish Linux-x86_64 Build Artifacts
@@ -157,7 +166,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: gcc-toolchain-mips64-Windows-x86_64
-          path: ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64-temp/gcc-toolchain-mips64-Windows-x86_64
+          path: ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64
 
       - name: Download artifact
         uses: actions/download-artifact@v3
@@ -166,7 +175,9 @@ jobs:
           path: ${{ runner.temp }}/gcc-toolchain-mips64-Linux-x86_64
 
       - name: Display structure of downloaded files
-        run: ls -R
+        run: |
+          cd ${{ runner.temp }}
+          ls -R
 
       - name: Generate Draft Release
 #        if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
@@ -174,9 +185,9 @@ jobs:
         with:
           draft: true
           prerelease: true
-          name: "V${{ steps.gcc-version-generator.outputs.GCC_VERSION }}-${{ github.run_id }}"
+          name: "V${{ build-toolchain.outputs.gcc-version }}-${{ github.run_id }}"
           tag_name: "latest"
           files: |
             ${{ runner.temp }}/**/*.deb
             ${{ runner.temp }}/**/*.rpm
-            ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64-temp/
+            ${{ runner.temp }}/**/*.zip
