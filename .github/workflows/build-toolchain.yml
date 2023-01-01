@@ -10,9 +10,6 @@ on:
   push:
   pull_request:
   
-env:
-  GCC_VERSION: 'x.x.x'
-
 jobs:
   build-toolchain:
     # targets the oldest ubuntu image available to create valid packages for as many versions possible.
@@ -75,8 +72,9 @@ jobs:
           key: ${{ runner.os }}-dependency-downloads # TODO: concurrency errors may currently occur due to matrix, but they are the same files.
 
       - name: Get GCC version from file
+        id: gcc-version-generator
         run: |
-          echo "GCC_VERSION=$(grep -Po 'GCC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_ENV
+          echo "GCC_VERSION=$(grep -Po 'GCC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
         continue-on-error: false
 
       - name: Build N64 MIPS GCC toolchain for ${{ matrix.target-platform }}
@@ -123,7 +121,7 @@ jobs:
         continue-on-error: true
         env:
           Package_Name: gcc-toolchain-mips64-linux64
-          Package_Version: ${{ env.GCC_VERSION }} # TODO: should bump in line with GCC version?!
+          Package_Version: ${{ steps.gcc-version-generator.outputs.GCC_VERSION }}
           Package_Revision: ${{ github.run_id }}
           Package_License: GPL
           Package_Description: MIPS GCC toolchain for the N64
@@ -159,7 +157,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: gcc-toolchain-mips64-Windows-x86_64
-          path: ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64/gcc-toolchain-mips64/
+          path: ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64-temp/gcc-toolchain-mips64-Windows-x86_64
 
       - name: Download artifact
         uses: actions/download-artifact@v3
@@ -176,9 +174,9 @@ jobs:
         with:
           draft: true
           prerelease: true
-          name: "V${{ env.GCC_VERSION }}-${{ github.run_id }}"
+          name: "V${{ steps.gcc-version-generator.outputs.GCC_VERSION }}-${{ github.run_id }}"
           tag_name: "latest"
           files: |
             ${{ runner.temp }}/**/*.deb
             ${{ runner.temp }}/**/*.rpm
-            ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64/**/*
+            ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64-temp/
