@@ -1,4 +1,4 @@
-# Copyright (c) NetworkFusion 2022
+# Copyright (c) NetworkFusion 2023
 # See LICENSE file in the project root for full license information.
 
 # This workflow will build the libdragon N64 GCC toolchain to keep it up-to-date.
@@ -73,10 +73,12 @@ jobs:
             ./tools/**/*.tar.bz2
           key: ${{ runner.os }}-dependency-downloads # TODO: concurrency errors may currently occur due to matrix, but they are the same files.
 
-      - name: Get GCC version from file
+      - name: Get versions from toolchain file
         id: gcc-version-generator
         run: |
+          echo "BINUTILS_VERSION=$(grep -Po 'BINUTILS_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
           echo "GCC_VERSION=$(grep -Po 'GCC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          echo "NEWLIB_VERSION=$(grep -Po 'NEWLIB_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
         continue-on-error: false
 
       - name: Build N64 MIPS GCC toolchain for ${{ matrix.target-platform }}
@@ -179,15 +181,16 @@ jobs:
           cd ${{ runner.temp }}
           ls -R
 
-      - name: Generate Draft Release
+      - name: Generate Draft Pre-Release
 #        if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
           draft: true
           prerelease: true
           name: "V${{ needs.build-toolchain.outputs.gcc-version }}-${{ github.run_id }}"
-          tag_name: "latest"
+          # tag_name: "latest"
           files: |
             ${{ runner.temp }}/**/*.deb
             ${{ runner.temp }}/**/*.rpm
             ${{ runner.temp }}/**/*.zip
+            # LICENSE
