@@ -24,7 +24,7 @@ jobs:
           { target-platform: Linux-x86_64, host: '' }
         ]
     env:
-      GCC_VERSION: 12.2.0
+      GCC_VERSION: 12.0.0
 
     steps:
       - name: Install native system build dependencies
@@ -83,7 +83,7 @@ jobs:
 
       - name: Get GCC version from file
         run: |
-          grep -o 'GCC_V=[^"]*' ./tools/build-toolchain.sh >> $GITHUB_ENV
+          echo "GCC_VERSION=$(grep -o 'GCC_V=[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_ENV
         continue-on-error: true
 
       # https://fpm.readthedocs.io/en/v1.15.0/getting-started.html
@@ -173,9 +173,9 @@ jobs:
         with:
           draft: true
           prerelease: true
-          name: "Vx.x.x-y"
+          name: "V${{ env.GCC_VERSION }}-${{ github.run_id }}"
           #tag_name: "latest"
           files: |
             ./**/*.deb
             ./**/*.rpm
-            ./**/*.zip
+            ./gcc-toolchain-mips64-Windows-x86_64.zip
