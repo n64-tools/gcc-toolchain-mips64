@@ -185,7 +185,7 @@ jobs:
         with:
           draft: true
           prerelease: true
-          name: "V${{ build-toolchain.outputs.gcc-version }}-${{ github.run_id }}"
+          name: "V${{ needs.build-toolchain.outputs.gcc-version }}-${{ github.run_id }}"
           tag_name: "latest"
           files: |
             ${{ runner.temp }}/**/*.deb
