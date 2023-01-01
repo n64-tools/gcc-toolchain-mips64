@@ -159,11 +159,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: gcc-toolchain-mips64-Windows-x86_64
+          path: ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64/gcc-toolchain-mips64/
 
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: gcc-toolchain-mips64-Linux-x86_64
+          path: ${{ runner.temp }}/gcc-toolchain-mips64-Linux-x86_64
 
       - name: Display structure of downloaded files
         run: ls -R
@@ -175,8 +177,8 @@ jobs:
           draft: true
           prerelease: true
           name: "V${{ env.GCC_VERSION }}-${{ github.run_id }}"
-          #tag_name: "latest"
+          tag_name: "latest"
           files: |
-            ./**/*.deb
-            ./**/*.rpm
-            ./gcc-toolchain-mips64-Windows-x86_64.zip
+            ${{ runner.temp }}/**/*.deb
+            ${{ runner.temp }}/**/*.rpm
+            ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64/**/*
