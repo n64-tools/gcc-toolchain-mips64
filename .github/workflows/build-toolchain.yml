@@ -198,7 +198,7 @@ jobs:
           draft: true
           prerelease: true
           body_path: CHANGELOG.txt
-          name: "V${{ needs.build-toolchain.outputs.gcc-version }}-${{ github.run_id }}" # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
+          name: "V${{ needs.build-toolchain.outputs.gcc-version }}-latest # ${{ github.run_id }}" # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
           # tag_name: "latest" # uses GH run id as default, using latest causes issues as it tries to create a tag that already exists.
           files: |
             ${{ runner.temp }}/**/*.deb
