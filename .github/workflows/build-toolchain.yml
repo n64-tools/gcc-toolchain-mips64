@@ -17,12 +17,13 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       gcc-version: ${{ steps.gcc-version-generator.outputs.GCC_VERSION }}
+      newlib-version: ${{ steps.gcc-version-generator.outputs.NEWLIB_VERSION }}
+      binutils-version: ${{ steps.gcc-version-generator.outputs.NEWLIB_VERSION }}
     strategy:
       fail-fast: false
       matrix:
         include: [
           { target-platform: Windows-x86_64, host: x86_64-w64-mingw32 },
-#          { target-platform: Windows-i686, host: i686-w64-mingw32 },
           { target-platform: Linux-x86_64, host: '' }
         ]
 
@@ -79,6 +80,11 @@ jobs:
           echo "BINUTILS_VERSION=$(grep -Po 'BINUTILS_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
           echo "GCC_VERSION=$(grep -Po 'GCC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
           echo "NEWLIB_VERSION=$(grep -Po 'NEWLIB_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+
+          # echo "GMP_VERSION=$(grep -Po 'GMP_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          # echo "MPC_VERSION=$(grep -Po 'MPC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          # echo "MPFR_VERSION=$(grep -Po 'MPFR_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          # echo "MAKE_VERSION=$(grep -Po 'MAKE_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
         continue-on-error: false
 
       - name: Build N64 MIPS GCC toolchain for ${{ matrix.target-platform }}
@@ -145,7 +151,7 @@ jobs:
         with:
           name: gcc-toolchain-mips64-${{ matrix.target-platform }}
           path: |
-            ${{ runner.temp }}/**/*.zip
+            ${{ runner.temp }}/**/*.zip # uploads a zip which is in a zip! On the plus side, keeps the size down!
         continue-on-error: true
 
       - name: Publish Linux-x86_64 Build Artifacts
@@ -176,10 +182,14 @@ jobs:
           name: gcc-toolchain-mips64-Linux-x86_64
           path: ${{ runner.temp }}/gcc-toolchain-mips64-Linux-x86_64
 
-      - name: Display structure of downloaded files
+      - name: Generate Changelog
         run: |
-          cd ${{ runner.temp }}
-          ls -R
+          $CHANGELOG_TEXT = "Updates toolchain dependencies to:\r\n"
+          $CHANGELOG_TEXT += "  * GCC:      V${{ needs.build-toolchain.outputs.gcc-version }}\r\n"
+          $CHANGELOG_TEXT += "  * Newlib:   V${{ needs.build-toolchain.outputs.newlib-version }}\r\n"
+          $CHANGELOG_TEXT += "  * BinUtils: V${{ needs.build-toolchain.outputs.binutils-version }}\r\n"
+
+          echo $CHANGELOG_TEXT > ${{ github.workspace }}/CHANGELOG.txt
 
       - name: Generate Draft Pre-Release
 #        if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
@@ -187,10 +197,12 @@ jobs:
         with:
           draft: true
           prerelease: true
-          name: "V${{ needs.build-toolchain.outputs.gcc-version }}-${{ github.run_id }}"
-          # tag_name: "latest"
+          name: "V${{ needs.build-toolchain.outputs.gcc-version }}-${{ github.run_id }}" # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
+          # tag_name: "latest" # uses GH run id as default, using latest causes issues as it tries to create a tag that already exists.
           files: |
             ${{ runner.temp }}/**/*.deb
             ${{ runner.temp }}/**/*.rpm
             ${{ runner.temp }}/**/*.zip
-            # LICENSE
+            LICENSE
+            CHANGELOG.txt
+            INSTALLATION.md # TODO: should this be markdown or converted to text (it is readable anyway).
