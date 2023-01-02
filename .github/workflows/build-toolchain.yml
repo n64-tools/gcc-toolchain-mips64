@@ -184,7 +184,7 @@ jobs:
 
       - name: Generate Changelog
         run: |
-          $CHANGELOG_TEXT = "Updates toolchain dependencies to:\r\n"
+          $CHANGELOG_TEXT = "Uses toolchain dependencies:\r\n"
           $CHANGELOG_TEXT += "  * GCC:      V${{ needs.build-toolchain.outputs.gcc-version }}\r\n"
           $CHANGELOG_TEXT += "  * Newlib:   V${{ needs.build-toolchain.outputs.newlib-version }}\r\n"
           $CHANGELOG_TEXT += "  * BinUtils: V${{ needs.build-toolchain.outputs.binutils-version }}\r\n"
@@ -197,6 +197,7 @@ jobs:
         with:
           draft: true
           prerelease: true
+          body_path: CHANGELOG.txt
           name: "V${{ needs.build-toolchain.outputs.gcc-version }}-${{ github.run_id }}" # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
           # tag_name: "latest" # uses GH run id as default, using latest causes issues as it tries to create a tag that already exists.
           files: |
@@ -204,5 +205,4 @@ jobs:
             ${{ runner.temp }}/**/*.rpm
             ${{ runner.temp }}/**/*.zip
             LICENSE
-            CHANGELOG.txt
             INSTALLATION.md # TODO: should this be markdown or converted to text (it is readable anyway).
