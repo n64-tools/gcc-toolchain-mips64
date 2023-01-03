@@ -193,7 +193,7 @@ jobs:
           CHANGELOG_TEXT+="  * MPC:      V${{ needs.build-toolchain.outputs.mpc-version }}\r\n"
           CHANGELOG_TEXT+="  * MPFR:     V${{ needs.build-toolchain.outputs.mpfr-version }}\r\n"
           # CHANGELOG_TEXT+="  * MAKEFILE: V${{ needs.build-toolchain.outputs.make-version }}\r\n"
-          echo "CHANGELOG_TEXT" > ${{ github.workspace }}/CHANGELOG
+          echo CHANGELOG_TEXT > ${{ github.workspace }}/CHANGELOG
 
 # TODO: name and tag... ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
 # TODO: INSTALLATION.md should this be markdown or converted to text (it is readable anyway).
@@ -209,6 +209,6 @@ jobs:
           files: |
             ${{ runner.temp }}/**/*.deb
             ${{ runner.temp }}/**/*.rpm
-            ${{ steps.download-windows-artifact.outputs.download-path }}
+            ${{ steps.download-windows-artifact.outputs.download-path }}/*
             LICENSE
             INSTALLATION.md
