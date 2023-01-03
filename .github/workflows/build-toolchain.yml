@@ -19,6 +19,10 @@ jobs:
       gcc-version: ${{ steps.gcc-version-generator.outputs.GCC_VERSION }}
       newlib-version: ${{ steps.gcc-version-generator.outputs.NEWLIB_VERSION }}
       binutils-version: ${{ steps.gcc-version-generator.outputs.NEWLIB_VERSION }}
+      gmp-version: ${{ steps.gcc-version-generator.outputs.GMP_VERSION }}
+      mpc-version: ${{ steps.gcc-version-generator.outputs.MPC_VERSION }}
+      mpfr-version: ${{ steps.gcc-version-generator.outputs.MPFR_VERSION }}
+#      make-version: ${{ steps.gcc-version-generator.outputs.MAKE_VERSION }}
     strategy:
       fail-fast: false
       matrix:
@@ -81,9 +85,9 @@ jobs:
           echo "GCC_VERSION=$(grep -Po 'GCC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
           echo "NEWLIB_VERSION=$(grep -Po 'NEWLIB_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
 
-          # echo "GMP_VERSION=$(grep -Po 'GMP_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
-          # echo "MPC_VERSION=$(grep -Po 'MPC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
-          # echo "MPFR_VERSION=$(grep -Po 'MPFR_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          echo "GMP_VERSION=$(grep -Po 'GMP_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          echo "MPC_VERSION=$(grep -Po 'MPC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          echo "MPFR_VERSION=$(grep -Po 'MPFR_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
           # echo "MAKE_VERSION=$(grep -Po 'MAKE_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
         continue-on-error: false
 
@@ -138,20 +142,13 @@ jobs:
           Package_Url: https://n64brew.com
           Package_Maintainer: N64 Brew Community
 
-      - name: Compress Windows-x86_64 Build Artifacts
-        if: ${{ matrix.target-platform == 'Windows-x86_64' }}
-        run: |
-          cd ${{ runner.temp }}/n64-brew/
-          zip -r -q ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64.zip *
-        continue-on-error: true
-
       - name: Publish Windows-x86_64 Build Artifact
         if: ${{ matrix.target-platform == 'Windows-x86_64' }}
         uses: actions/upload-artifact@v3
         with:
           name: gcc-toolchain-mips64-${{ matrix.target-platform }}
           path: |
-            ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64.zip # uploads a zip which is in a zip! On the plus side, keeps the size down!
+            ${{ runner.temp }}/n64-brew
         continue-on-error: true
 
       - name: Publish Linux-x86_64 Build Artifacts
@@ -188,8 +185,17 @@ jobs:
           $CHANGELOG_TEXT += "  * GCC:      V${{ needs.build-toolchain.outputs.gcc-version }}\r\n"
           $CHANGELOG_TEXT += "  * Newlib:   V${{ needs.build-toolchain.outputs.newlib-version }}\r\n"
           $CHANGELOG_TEXT += "  * BinUtils: V${{ needs.build-toolchain.outputs.binutils-version }}\r\n"
-
+          $CHANGELOG_TEXT += "  * GMP:      V${{ needs.build-toolchain.outputs.gmp-version }}\r\n"
+          $CHANGELOG_TEXT += "  * MPC:      V${{ needs.build-toolchain.outputs.mpc-version }}\r\n"
+          $CHANGELOG_TEXT += "  * MPFR:     V${{ needs.build-toolchain.outputs.mpfr-version }}\r\n"
+          # $CHANGELOG_TEXT += "  * MAKEFILE: V${{ needs.build-toolchain.outputs.make-version }}\r\n"
           echo $CHANGELOG_TEXT > ${{ github.workspace }}/CHANGELOG.txt
+
+      - name: Compress Windows-x86_64 Artifacts
+        run: |
+          cd ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64
+          zip -r -q ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64.zip *
+        continue-on-error: true
 
       - name: Generate Draft Pre-Release
 #        if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
