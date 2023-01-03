@@ -208,7 +208,8 @@ jobs:
           draft: true
           prerelease: true
           body_path: CHANGELOG
-          name: "V${{ needs.build-toolchain.outputs.gcc-version }}-latest-test" # ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
+# ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
+          name: 'V${{ needs.build-toolchain.outputs.gcc-version }}-latest-test'
           tag_name: "latest-test"
           files: |
             ${{ runner.temp }}/**/*.deb
