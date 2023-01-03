@@ -202,13 +202,13 @@ jobs:
         continue-on-error: true
 
       - name: Generate Draft Pre-Release
-#        if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
+        #  if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
           draft: true
           prerelease: true
           body_path: CHANGELOG
-# ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
+          # ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
           name: 'V${{ needs.build-toolchain.outputs.gcc-version }}-latest-test'
           tag_name: "latest-test"
           files: |
