@@ -151,7 +151,7 @@ jobs:
         with:
           name: gcc-toolchain-mips64-${{ matrix.target-platform }}
           path: |
-            ${{ runner.temp }}/**/*.zip # uploads a zip which is in a zip! On the plus side, keeps the size down!
+            ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64.zip # uploads a zip which is in a zip! On the plus side, keeps the size down!
         continue-on-error: true
 
       - name: Publish Linux-x86_64 Build Artifacts
