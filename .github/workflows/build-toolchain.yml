@@ -27,8 +27,8 @@ jobs:
       fail-fast: false
       matrix:
         include: [
-          { target-platform: Windows-x86_64, host: x86_64-w64-mingw32 },
-          { target-platform: Linux-x86_64, host: '' }
+          { target-platform: Windows-x86_64, host: x86_64-w64-mingw32, makefile-version: 4.4 },
+          { target-platform: Linux-x86_64, host: '', makefile-version: '' }
         ]
 
     steps:
@@ -96,7 +96,7 @@ jobs:
           # required for newlib (as not the default?!)
           export PATH="$PATH:${{ runner.temp }}/n64-brew"
           cd ./tools/
-          sudo N64_INST=${{ runner.temp }}/n64-brew HOST=${{ matrix.host }} ./build-toolchain.sh
+          sudo N64_INST=${{ runner.temp }}/n64-brew HOST=${{ matrix.host }} MAKE_V=${{ matrix.makefile-version }} ./build-toolchain.sh
         continue-on-error: true
 
       # https://fpm.readthedocs.io/en/v1.15.0/getting-started.html
