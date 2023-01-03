@@ -195,12 +195,8 @@ jobs:
           # CHANGELOG_TEXT+="  * MAKEFILE: V${{ needs.build-toolchain.outputs.make-version }}\r\n"
           echo "CHANGELOG_TEXT" > ${{ github.workspace }}/CHANGELOG
 
-      - name: Compress Windows-x86_64 Artifacts
-        run: |
-          cd ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64
-          zip -r -q ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64.zip *
-        continue-on-error: true
-
+# TODO: name and tag... ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
+# TODO: INSTALLATION.md should this be markdown or converted to text (it is readable anyway).
       - name: Generate Draft Pre-Release
         #  if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
@@ -208,7 +204,6 @@ jobs:
           draft: true
           prerelease: true
           body_path: CHANGELOG
-          # ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
           name: 'V${{ needs.build-toolchain.outputs.gcc-version }}-latest-test'
           tag_name: "latest-test"
           files: |
@@ -216,5 +211,4 @@ jobs:
             ${{ runner.temp }}/**/*.rpm
             ${{ steps.download-windows-artifact.outputs.download-path }}
             LICENSE
-# TODO: should this be markdown or converted to text (it is readable anyway).
             INSTALLATION.md
