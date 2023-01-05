@@ -46,20 +46,21 @@ jobs:
           sudo apt-get install -y mingw-w64
           # If there are other dependencies, we should add them here and make sure the documentation is updated!
 
-      # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-ruby
-      - name: Set up Ruby
-        if: ${{ matrix.target-platform == 'Linux-x86_64' }}
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-          ruby-version: '3.1'
+      # # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-ruby
+      # - name: Set up Ruby
+      #   if: ${{ matrix.target-platform == 'Linux-x86_64' }}
+      #   uses: ruby/setup-ruby@v1
+      #   with:
+      #     bundler-cache: true
+      #     ruby-version: '3.1'
+      #   continue-on-error: true
 
       - name: Install Package Creator
         if: ${{ matrix.target-platform == 'Linux-x86_64' }}
         run: |
           echo installing jordansissel/fpm ruby package
           gem install fpm
-          fpm --version
+          # fpm --version
         continue-on-error: true
 
       - name: Checkout Code
@@ -207,10 +208,11 @@ jobs:
               CHANGELOG_TEXT += f"  * {name}: V{needs.build-toolchain.outputs[version]}\r\n"
           echo "$CHANGELOG_TEXT" > ${{ github.workspace }}/CHANGELOG
 
-      - name: Zip windows artifact
+      # Compress and move the windows folder ready for upload (not needed for local builds).
+      - name: Compress and move windows artifacts to $GITHUB_WORKSPACE/win64
         run: |
-          cd ${{ runner.temp }}
-          zip -rj gcc-toolchain-mips64-win64.zip ${{ steps.download-windows-artifact.outputs.download-path }}/../*
+        cd ${{ steps.download-windows-artifact.outputs.download-path }}
+        zip -r -q ${{ runner.temp }}/gcc-toolchain-mips64-win64.zip *
 
 # TODO: name and tag... ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
 # TODO: INSTALLATION.md should this be markdown or converted to text (it is readable anyway).
