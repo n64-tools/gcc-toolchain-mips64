@@ -103,16 +103,6 @@ jobs:
       - name: Generate toolchain packages for UNIX based OS
         if: ${{ matrix.target-platform == 'Linux-x86_64' }}
         run: |
-
-          # Create a folder packages can control
-          mkdir -p ${{ runner.temp }}/packages
-
-          # Move and make executable lowercase (otherwise could be issues)
-          cp -R $Source_Directory_Path ${{ runner.temp }}/packages
-
-          # base directory for package generation
-          cd ${{ runner.temp }}/packages
-
           echo Generating debian package
           fpm \
             -t deb \
@@ -126,7 +116,7 @@ jobs:
             --description "$Package_Description" \
             --url "$Package_Url" \
             --maintainer "$Package_Maintainer" \
-            N64_INST=$Installation_Directory_Path
+            ${{ runner.temp }}/n64-brew/=/usr/local/
 
           echo Generating rpm package
           fpm \
@@ -141,12 +131,10 @@ jobs:
             --description "$Package_Description" \
             --url "$Package_Url" \
             --maintainer "$Package_Maintainer" \
-            N64_INST=$Installation_Directory_Path
+            ${{ runner.temp }}/n64-brew/=/usr/local/
         continue-on-error: true
         env:
           Package_Name: gcc-toolchain-mips64-linux64
-          Source_Directory_Path: ${{ runner.temp }}/n64-brew/
-          Installation_Directory_Path: /usr/local/
           Package_Version: ${{ steps.gcc-version-generator.outputs.GCC_VERSION }}
           Package_Revision: ${{ github.run_id }}
           Package_License: GPL
@@ -207,10 +195,12 @@ jobs:
           # CHANGELOG_TEXT+="  * MAKEFILE: V${{ needs.build-toolchain.outputs.make-version }}\r\n"
           echo $CHANGELOG_TEXT > ${{ github.workspace }}/CHANGELOG
 
-      - name: Test files path
+      - name: Zip windows artifact
         run: |
           cd ${{ steps.download-windows-artifact.outputs.download-path }}
           ls -R
+          cd ${{ runner.temp }}
+          zip -r gcc-toolchain-mips64.zip ${{ steps.download-windows-artifact.outputs.download-path }}
 
 # TODO: name and tag... ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
 # TODO: INSTALLATION.md should this be markdown or converted to text (it is readable anyway).
@@ -226,6 +216,6 @@ jobs:
           files: |
             ${{ runner.temp }}/**/*.deb
             ${{ runner.temp }}/**/*.rpm
-            ${{ steps.download-windows-artifact.outputs.download-path }}/**/*
+            ${{ runner.temp }}/*.zip
             LICENSE
             INSTALLATION.md
