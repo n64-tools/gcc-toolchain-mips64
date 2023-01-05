@@ -209,6 +209,6 @@ jobs:
           files: |
             ${{ runner.temp }}/**/*.deb
             ${{ runner.temp }}/**/*.rpm
-            ${{ steps.download-windows-artifact.outputs.download-path }}
+            ${{ steps.download-windows-artifact.outputs.download-path }}/*
             LICENSE
             INSTALLATION.md
