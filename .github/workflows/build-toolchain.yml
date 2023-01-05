@@ -193,14 +193,14 @@ jobs:
           CHANGELOG_TEXT+="  * MPC:      V${{ needs.build-toolchain.outputs.mpc-version }}\r\n"
           CHANGELOG_TEXT+="  * MPFR:     V${{ needs.build-toolchain.outputs.mpfr-version }}\r\n"
           # CHANGELOG_TEXT+="  * MAKEFILE: V${{ needs.build-toolchain.outputs.make-version }}\r\n"
-          echo $CHANGELOG_TEXT > ${{ github.workspace }}/CHANGELOG
+          echo "$CHANGELOG_TEXT" > ${{ github.workspace }}/CHANGELOG
 
       - name: Zip windows artifact
         run: |
           cd ${{ steps.download-windows-artifact.outputs.download-path }}
           ls -R
           cd ${{ runner.temp }}
-          zip -r gcc-toolchain-mips64.zip ${{ steps.download-windows-artifact.outputs.download-path }}
+          zip -j gcc-toolchain-mips64-win64.zip ${{ steps.download-windows-artifact.outputs.download-path }}/*
 
 # TODO: name and tag... ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
 # TODO: INSTALLATION.md should this be markdown or converted to text (it is readable anyway).
@@ -211,8 +211,9 @@ jobs:
           draft: true
           prerelease: true
           body_path: CHANGELOG
-          name: 'V${{ needs.build-toolchain.outputs.gcc-version }}-latest-test'
-          tag_name: "latest-test"
+          generate_release_notes: false
+          name: 'V${{ needs.build-toolchain.outputs.gcc-version }}-latest-prerelease'
+          tag_name: "toolchain-latest-prerelease"
           files: |
             ${{ runner.temp }}/**/*.deb
             ${{ runner.temp }}/**/*.rpm
