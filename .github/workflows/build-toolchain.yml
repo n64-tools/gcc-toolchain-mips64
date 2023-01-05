@@ -211,8 +211,8 @@ jobs:
       # Compress and move the windows folder ready for upload (not needed for local builds).
       - name: Compress and move windows artifacts to $GITHUB_WORKSPACE/win64
         run: |
-        cd ${{ steps.download-windows-artifact.outputs.download-path }}
-        zip -r -q ${{ runner.temp }}/gcc-toolchain-mips64-win64.zip *
+          cd ${{ steps.download-windows-artifact.outputs.download-path }}
+          zip -r -q ${{ runner.temp }}/gcc-toolchain-mips64-win64.zip *
 
 # TODO: name and tag... ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
 # TODO: INSTALLATION.md should this be markdown or converted to text (it is readable anyway).
