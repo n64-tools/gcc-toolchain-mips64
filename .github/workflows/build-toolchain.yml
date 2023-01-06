@@ -195,7 +195,7 @@ jobs:
           CHANGELOG_TEXT+="  * GMP:      V${{ needs.build-toolchain.outputs.gmp-version }}\r\n"
           CHANGELOG_TEXT+="  * MPC:      V${{ needs.build-toolchain.outputs.mpc-version }}\r\n"
           CHANGELOG_TEXT+="  * MPFR:     V${{ needs.build-toolchain.outputs.mpfr-version }}\r\n"
-          CHANGELOG_TEXT += "Uses Windows dependencies:\r\n"
+          CHANGELOG_TEXT+="Uses Windows dependencies:\r\n"
           CHANGELOG_TEXT+="  * MAKEFILE: V${{ needs.build-toolchain.outputs.make-version }}\r\n"
           echo "$CHANGELOG_TEXT" > ${{ github.workspace }}/CHANGELOG
 
