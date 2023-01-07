@@ -123,7 +123,7 @@ jobs:
             --description "$Package_Description" \
             --url "$Package_Url" \
             --maintainer "$Package_Maintainer" \
-            ${{ runner.temp }}/n64-brew/=/opt/n64/
+            ${{ runner.temp }}/n64-brew/=/opt/n64/ \
             libdragon-env.sh=/etc/profile.d/libdragon-env.sh
 
           echo Generating rpm package
@@ -139,7 +139,7 @@ jobs:
             --description "$Package_Description" \
             --url "$Package_Url" \
             --maintainer "$Package_Maintainer" \
-            ${{ runner.temp }}/n64-brew/=/opt/n64/
+            ${{ runner.temp }}/n64-brew/=/opt/n64/ \
             libdragon-env.sh=/etc/profile.d/libdragon-env.sh
         continue-on-error: true
         env:
