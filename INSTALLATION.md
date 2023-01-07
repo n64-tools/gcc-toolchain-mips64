@@ -4,10 +4,12 @@
 
 
 ## Debian
-.deb
+Download and install the debian (.deb) package:
+`$ sudo dpkg -i <packagename>.deb`
 
-## Redhat
-.rpm
+## RPM
+Download and install the RPM (.rpm) package.
+`rpm -i <packagename>.rpm`
 
 ## Windows
 Download the .zip file and extract it.

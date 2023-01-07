@@ -185,18 +185,30 @@ jobs:
           name: gcc-toolchain-mips64-Linux-x86_64
           path: ${{ runner.temp }}/gcc-toolchain-mips64-Linux-x86_64
 
+      - name: Convert files for release upload
+        run: |
+          mv ${{ github.workspace }}/LICENSE ${{ github.workspace }}/LICENSE.txt
+          mv ${{ github.workspace }}/INSTALLATION.md ${{ github.workspace }}/INSTALLATION.txt
+
       - name: Generate Changelog
         run: |
-          CHANGELOG_TEXT="Uses toolchain dependencies:</br>"
+          CHANGELOG_TEXT="Latest GCC toolchain for the N64</br>"
+          CHANGELOG_TEXT+="Generated from libDragon.</br>"
+          CHANGELOG_TEXT+='</br>'
+          CHANGELOG_TEXT+='</br>'
+          CHANGELOG_TEXT+="Builds toolchain dependencies:</br>"
           CHANGELOG_TEXT+="  * GCC:      V${{ needs.build-toolchain.outputs.gcc-version }}</br>"
           CHANGELOG_TEXT+="  * Newlib:   V${{ needs.build-toolchain.outputs.newlib-version }}</br>"
           CHANGELOG_TEXT+="  * BinUtils: V${{ needs.build-toolchain.outputs.binutils-version }}</br>"
-          CHANGELOG_TEXT+="Uses probable extra dependencies:</br>"
+          CHANGELOG_TEXT+='</br>'
+          CHANGELOG_TEXT+="With dependencies:</br>"
           CHANGELOG_TEXT+="  * GMP:      V${{ needs.build-toolchain.outputs.gmp-version }}</br>"
           CHANGELOG_TEXT+="  * MPC:      V${{ needs.build-toolchain.outputs.mpc-version }}</br>"
           CHANGELOG_TEXT+="  * MPFR:     V${{ needs.build-toolchain.outputs.mpfr-version }}</br>"
-          CHANGELOG_TEXT+="Uses Windows dependencies:</br>"
+          CHANGELOG_TEXT+='</br>'
+          CHANGELOG_TEXT+="Also generates Windows toolchain dependencies:</br>"
           CHANGELOG_TEXT+="  * MAKEFILE: V${{ needs.build-toolchain.outputs.make-version }}</br>"
+          CHANGELOG_TEXT+='</br>'
           echo "$CHANGELOG_TEXT" > ${{ github.workspace }}/CHANGELOG
 
       # Compress and move the windows folder ready for upload.
@@ -221,5 +233,5 @@ jobs:
             ${{ runner.temp }}/**/*.deb
             ${{ runner.temp }}/**/*.rpm
             ${{ runner.temp }}/*.zip
-            LICENSE
-            INSTALLATION.md
+            LICENSE.txt
+            INSTALLATION.txt
