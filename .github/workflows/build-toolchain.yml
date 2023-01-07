@@ -31,6 +31,9 @@ jobs:
           { target-platform: Linux-x86_64, host: '', makefile-version: '' }
         ]
 
+    env:
+      Build_Directory: ${{ runner.temp }}/libdragon-toolchain
+
     steps:
       - name: Install native system build dependencies
         run: |
@@ -96,9 +99,9 @@ jobs:
       - name: Build N64 MIPS GCC toolchain for ${{ matrix.target-platform }}
         run: |
           # required for newlib (as not the default?!)
-          export PATH="$PATH:${{ runner.temp }}/n64-brew"
+          export PATH="$PATH:${{ env.Build_Directory }}"
           cd ./tools/
-          sudo N64_INST=${{ runner.temp }}/n64-brew HOST=${{ matrix.host }} MAKE_V=${{ matrix.makefile-version }} ./build-toolchain.sh
+          sudo N64_INST=${{ env.Build_Directory }} HOST=${{ matrix.host }} MAKE_V=${{ matrix.makefile-version }} ./build-toolchain.sh
         continue-on-error: true
 
       # https://fpm.readthedocs.io/en/v1.15.0/getting-started.html
@@ -106,8 +109,8 @@ jobs:
         if: ${{ matrix.target-platform == 'Linux-x86_64' }}
         run: |
           echo Generate environment var file
-          echo 'export N64_INST=/opt/n64' > "libdragon-env.sh"
-          chmod 755 "libdragon-env.sh"
+          echo 'export N64_INST=$Package_Installation_Directory' > "$Package_Name-env.sh"
+          chmod 755 "$Package_Name-env.sh"
 
           #TODO: there is currently a dependency on bash, but this should actually be makefile.
           echo Generating debian package
@@ -123,8 +126,8 @@ jobs:
             --description "$Package_Description" \
             --url "$Package_Url" \
             --maintainer "$Package_Maintainer" \
-            ${{ runner.temp }}/n64-brew/=/opt/n64/ \
-            libdragon-env.sh=/etc/profile.d/libdragon-env.sh
+            $Package_Source_Directory=$Package_Installation_Directory/ \
+            $Package_Name-env.sh=/etc/profile.d/$Package_Name-env.sh
 
           echo Generating rpm package
           fpm \
@@ -139,10 +142,12 @@ jobs:
             --description "$Package_Description" \
             --url "$Package_Url" \
             --maintainer "$Package_Maintainer" \
-            ${{ runner.temp }}/n64-brew/=/opt/n64/ \
-            libdragon-env.sh=/etc/profile.d/libdragon-env.sh
+            $Package_Source_Directory=$Package_Installation_Directory/ \
+            $Package_Name-env.sh=/etc/profile.d/$Package_Name-env.sh
         continue-on-error: true
         env:
+          Package_Source_Directory: ${{ env.Build_Directory }}/
+          Package_Installation_Directory: /opt/n64
           Package_Name: gcc-toolchain-mips64-linux64
           Package_Version: ${{ steps.gcc-version-generator.outputs.GCC_VERSION }}
           Package_Revision: ${{ github.run_id }}
@@ -157,7 +162,7 @@ jobs:
         with:
           name: gcc-toolchain-mips64-${{ matrix.target-platform }}
           path: |
-            ${{ runner.temp }}/n64-brew
+            ${{ env.Build_Directory }}
         continue-on-error: true
 
       - name: Publish Linux-x86_64 Build Artifacts
