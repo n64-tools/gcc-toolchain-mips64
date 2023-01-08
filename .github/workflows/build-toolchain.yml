@@ -42,6 +42,7 @@ jobs:
           sudo apt-get install libmpc-dev
           sudo apt-get install squashfs-tools
           # If there are other dependencies, we should add them here and make sure the documentation is updated!
+        continue-on-error: true
 
       - name: Install x-compile system build dependencies
         if: ${{ matrix.target-platform == 'Windows-x86_64' }}
@@ -112,7 +113,9 @@ jobs:
           echo 'export N64_INST=$Package_Installation_Directory' > "$Package_Name-env.sh"
           chmod 755 "$Package_Name-env.sh"
 
-          #TODO: there is currently a dependency on bash, but this should actually be makefile.
+          # TODO: there is currently a dependency on makefile. but it is not added.
+          # packages need something like `--depends bash \`
+          # TODO: a warning is generated when adding files to `\etc`. The current workaround is: --deb-no-default-config-files
           echo Generating debian package
           fpm \
             -t deb \
@@ -122,10 +125,10 @@ jobs:
             --license $Package_License \
             --version $Package_Version \
             --architecture all \
-            --depends bash \
             --description "$Package_Description" \
             --url "$Package_Url" \
             --maintainer "$Package_Maintainer" \
+            --deb-no-default-config-files \
             $Package_Source_Directory=$Package_Installation_Directory/ \
             $Package_Name-env.sh=/etc/profile.d/$Package_Name-env.sh
 
@@ -138,7 +141,6 @@ jobs:
             --license $Package_License \
             --version $Package_Version \
             --architecture x86_64 \
-            --depends bash \
             --description "$Package_Description" \
             --url "$Package_Url" \
             --maintainer "$Package_Maintainer" \
