@@ -18,7 +18,7 @@ jobs:
     outputs:
       gcc-version: ${{ steps.gcc-version-generator.outputs.GCC_VERSION }}
       newlib-version: ${{ steps.gcc-version-generator.outputs.NEWLIB_VERSION }}
-      binutils-version: ${{ steps.gcc-version-generator.outputs.NEWLIB_VERSION }}
+      binutils-version: ${{ steps.gcc-version-generator.outputs.BINUTILS_VERSION }}
       gmp-version: ${{ steps.gcc-version-generator.outputs.GMP_VERSION }}
       mpc-version: ${{ steps.gcc-version-generator.outputs.MPC_VERSION }}
       mpfr-version: ${{ steps.gcc-version-generator.outputs.MPFR_VERSION }}

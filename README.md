@@ -1,10 +1,4 @@
-**NOTE:** This repo will be updated or deprecated in the near future as the [official libDragon](dragonminded/libgragon) toolchain now supports the ability to do the same thing using:
-```
-sudo apt-get install -y mingw-w64
-cd ./tools/
-sudo N64_INST=/usr/local/n64/ HOST=x86_64-w64-mingw32 ./build-toolchain.sh
-```
-
+**NOTE:** This repo uses the [official libDragon](dragonminded/libdragon) toolchain build script to generate its artifacts. However, it may also include features or abilities that have not yet been added.
 
 # mips64-gcc-toolchain for the N64
 
