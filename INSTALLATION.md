@@ -3,16 +3,16 @@
 ## Operating System
 
 
-## Debian
+### Debian
 Download and install the debian (.deb) package:
 `$ sudo dpkg -i <packagename>.deb`
 
-## RPM
+### RPM
 Download and install the RPM (.rpm) package.
 `rpm -i <packagename>.rpm`
 
-## Windows
+### Windows
 Download the .zip file and extract it.
-Move the contained file.
+Move the folder.
 Add the file path to an environment variable
 Enjoy!
