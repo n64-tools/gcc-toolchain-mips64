@@ -34,7 +34,7 @@ RUN ./build-toolchain.sh
 RUN rm -rf ${N64_INST}/share/locale/*
 
 # Stage 2 - Prepare minimal image
-FROM debian:11.1-slim
+FROM debian:stable-slim
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
 # Setup paths for the libgragon toolchain
