@@ -1,111 +1,275 @@
-name: CI
+# Copyright (c) NetworkFusion 2023
+# See LICENSE file in the project root for full license information.
+
+# This workflow will build the libdragon N64 GCC toolchain to keep it up-to-date.
+name: Build latest libdragon N64 MIPS GCC toolchain
 
 on:
+  # This action will take about 40-70 minutes to run!
+  # TODO: Should actually do it on cron once a month (if not manually run).
   push:
-  pull_request:
-    branches:   
-      - '!develop**'   # excludes develop* branches (reserved to not duplicate builds that are not on forks)
-  # repository_dispatch:
-  #   types: [run_build]
-
+    branches:
+      - main
+      - master
+    pull_request:
+    workflow_dispatch:
+  
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-toolchain:
+    # targets the oldest ubuntu image available to create valid packages for as many versions possible.
+    # TODO: move to using a docker container to support older versions.
+    runs-on: ubuntu-20.04
+    outputs:
+      gcc-version: ${{ steps.gcc-version-generator.outputs.GCC_VERSION }}
+      newlib-version: ${{ steps.gcc-version-generator.outputs.NEWLIB_VERSION }}
+      binutils-version: ${{ steps.gcc-version-generator.outputs.BINUTILS_VERSION }}
+      gmp-version: ${{ steps.gcc-version-generator.outputs.GMP_VERSION }}
+      mpc-version: ${{ steps.gcc-version-generator.outputs.MPC_VERSION }}
+      mpfr-version: ${{ steps.gcc-version-generator.outputs.MPFR_VERSION }}
+      make-version: ${{ steps.gcc-version-generator.outputs.MAKE_VERSION }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: [
+          { target-platform: Windows-x86_64, host: x86_64-w64-mingw32, makefile-version: 4.4 },
+          { target-platform: Linux-x86_64, host: '', makefile-version: '' }
+        ]
+
+    env:
+      Build_Directory: gcc-toolchain-mips64
 
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      - name: Install native system build dependencies
+        run: |
+          sudo apt-get install libmpfr-dev
+          sudo apt-get install texinfo
+          sudo apt-get install libmpc-dev
+          sudo apt-get install squashfs-tools
+          # If there are other dependencies, we should add them here and make sure the documentation is updated!
+        continue-on-error: true
 
-    # # Depending on Ubuntu version, maybe required for GCC install.
-    # - name: Add GCC Repository
-    #   run: |
-    #     sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-    #     sudo apt-get -qq update
+      - name: Install x-compile system build dependencies
+        if: ${{ matrix.target-platform == 'Windows-x86_64' }}
+        run: |
+          sudo apt-get install -y mingw-w64
+          # If there are other dependencies, we should add them here and make sure the documentation is updated!
 
-    # Some of these packages may already be installed, but update just incase (it doesn't hurt)!
-    - name: Install Required Packages
-      run: |
-        sudo apt-get install -y build-essential software-properties-common
-        # sudo apt-get install -y gcc-10
-        # sudo apt-get install -y g++-10
-        sudo apt-get install -y mingw-w64
-        # sudo apt-get install -y libgmp-dev bison
-        sudo apt-get install -y libmpfr-dev libmpc-dev
-        sudo apt-get install -y byacc texinfo
-        sudo apt-get install -y zip gzip tar
-        # sudo apt-gey install -y gcc-9-locales wine wine64 # not actually required, but suggested by the CI
+      # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-ruby
+      - name: Set up Ruby
+        if: ${{ matrix.target-platform == 'Linux-x86_64' }}
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: '3.1'
+        continue-on-error: true
 
-    # # Generate a changelog (not currently that helpful (and not required for local builds)).
-    # - name: Create Changelog
-    #   run: |
-    #    touch "CHANGELOG.txt"
-    #    git log --oneline --decorate > CHANGELOG.txt
+      - name: Install Package Creator
+        if: ${{ matrix.target-platform == 'Linux-x86_64' }}
+        run: |
+          echo installing jordansissel/fpm ruby package
+          gem install fpm
+          fpm --version
+        continue-on-error: true
 
-    # We do it first to fail fast (as most unknown)!
-    # Build MakeFile against linux (for windows)
-    - name: Build win64 makefile executable
-      run: |
-       cd $GITHUB_WORKSPACE/scripts/build/win64
-       bash ./build-win64-makefile.sh
-       rm ./build-win64-makefile.sh
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          repository: dragonminded/libdragon
+          fetch-depth: 1 # we only require the last check-in, unless we want to create a changelog.
 
-    # Build the mips64 GCC toolchain against linux
-    - name: Build linux64 toolchain
-      run:  |
-       cd $GITHUB_WORKSPACE/scripts/build/linux64
-       bash ./build-linux64-toolchain.sh
-       rm ./build-linux64-toolchain.sh
+      # Cache and restore dependencies instead of downloading them to increase build speed.
+      # Expires after 7 days.
+      - uses: actions/cache@v3
+        id: cache
+        with:
+          path: |
+            ./tools/**/*.tar.gz
+            ./tools/**/*.tar.bz2
+          key: ${{ runner.os }}-dependency-downloads # TODO: concurrency errors may currently occur due to matrix, but they are the same files.
 
-    # Compress and move the linux folder ready for upload (not needed for local builds).
-    - name: Compress and move linux artifact to $GITHUB_WORKSPACE/linux64
-      if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
-      run: |
-       mkdir -p $GITHUB_WORKSPACE/linux64/
-       cd $GITHUB_WORKSPACE/scripts/build/linux64
-       tar -czf ../gcc-toolchain-mips64-linux64.tar.gz *
-       mv "$GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-linux64.tar.gz" "$GITHUB_WORKSPACE/linux64/"
-   
-    # # Publish the compressed linux folder to the to github Artifacts (not needed unless debugging (adds considerable time)).
-    # - name: Publish linux Build Artifacts
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #    name: gcc-toolchain-mips64-linux64
-    #    path: ${{ github.workspace }}/scripts/build/linux64/*
-    #    retention-days: 5
+      - name: Get versions from toolchain file
+        id: gcc-version-generator
+        run: |
+          echo "BINUTILS_VERSION=$(grep -Po 'BINUTILS_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          echo "GCC_VERSION=$(grep -Po 'GCC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          echo "NEWLIB_VERSION=$(grep -Po 'NEWLIB_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
 
-    # Build the GCC toolchain against linux (for windows) and compress it (local builds could run build.sh).
-    - name: Build win64 toolchain
-      run: |
-       cd $GITHUB_WORKSPACE/scripts/build/win64
-       bash ./build-win64-toolchain.sh
-       rm ./build-win64-toolchain.sh
+          echo "GMP_VERSION=$(grep -Po 'GMP_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          echo "MPC_VERSION=$(grep -Po 'MPC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          echo "MPFR_VERSION=$(grep -Po 'MPFR_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
+          # TODO: this version is set explicitly. We need to fix!
+          echo "MAKE_VERSION=4.4" >> $GITHUB_OUTPUT
+        continue-on-error: false
 
-    # Compress and move the windows folder ready for upload (not needed for local builds).
-    - name: Compress and move windows artifacts to $GITHUB_WORKSPACE/win64
-      if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
-      run: |
-       mkdir -p $GITHUB_WORKSPACE/win64/
-       cd $GITHUB_WORKSPACE/scripts/build/win64
-       zip -r -q $GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-win64.zip *
-       mv "$GITHUB_WORKSPACE/scripts/build/gcc-toolchain-mips64-win64.zip" "$GITHUB_WORKSPACE/win64/"
-    
-    # Publish windows build artifacts to github Artifacts (not needed for local builds).
-    - name: Publish windows Build Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-       name: gcc-toolchain-mips64-win64
-       path: ${{ github.workspace }}/scripts/build/win64/*
+      - name: Build N64 MIPS GCC toolchain for ${{ matrix.target-platform }}
+        run: |
+          # required for newlib (as not the default?!)
+          export PATH="$PATH:${{ runner.temp }}/${{ env.Build_Directory }}"
+          cd ./tools/
+          sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} MAKE_V=${{ matrix.makefile-version }} ./build-toolchain.sh
 
-    - name: Generate Draft Release
-      if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
-      with:
-       draft: true
-       prerelease: true
-       name: "Vx.x.x-y"
-       #tag_name: "latest"
-       files: |
-        linux64/gcc-toolchain-mips64-linux64.tar.gz
-        win64/gcc-toolchain-mips64-win64.zip
-       # CHANGELOG.txt
+          echo Remove un-necessary content
+          rm -rf ${N64_INST}/share/locale/*
+        continue-on-error: true
+
+      # https://fpm.readthedocs.io/en/v1.15.0/getting-started.html
+      - name: Generate toolchain packages for Linux based OS
+        if: ${{ matrix.target-platform == 'Linux-x86_64' }}
+        run: |
+          echo Generate environment var file
+          echo 'export N64_INST=$Package_Installation_Directory' > "$Package_Name-env.sh"
+          chmod 755 "$Package_Name-env.sh"
+
+          # TODO: there is currently a dependency on makefile. but it is not added.
+          # packages need something like `--depends bash \`
+          echo Generating debian package
+          # TODO: a warning is generated when adding files to `\etc`. The current workaround is: --deb-no-default-config-files
+          fpm \
+            -t deb \
+            -s dir \
+            -p $Package_Name-$Package_Version-$Package_Revision-any.deb \
+            --name $Package_Name \
+            --license $Package_License \
+            --version $Package_Version \
+            --architecture all \
+            --description "$Package_Description" \
+            --url "$Package_Url" \
+            --maintainer "$Package_Maintainer" \
+            --deb-no-default-config-files \
+            $Package_Source_Directory=$Package_Installation_Directory/ \
+            $Package_Name-env.sh=/etc/profile.d/$Package_Name-env.sh
+
+          echo Generating rpm package
+          fpm \
+            -t rpm \
+            -s dir \
+            -p $Package_Name-$Package_Version-$Package_Revision-x86_64.rpm \
+            --name $Package_Name \
+            --license $Package_License \
+            --version $Package_Version \
+            --architecture x86_64 \
+            --description "$Package_Description" \
+            --url "$Package_Url" \
+            --maintainer "$Package_Maintainer" \
+            $Package_Source_Directory=$Package_Installation_Directory/ \
+            $Package_Name-env.sh=/etc/profile.d/$Package_Name-env.sh
+        continue-on-error: true
+        env:
+          Package_Source_Directory: ${{ runner.temp }}/${{ env.Build_Directory }}/
+          Package_Installation_Directory: /opt/${{ env.Build_Directory }}-n64tools
+          Package_Name: ${{ env.Build_Directory }}-n64tools
+          Package_Version: ${{ steps.gcc-version-generator.outputs.GCC_VERSION }}
+          Package_Revision: ${{ github.run_id }}
+          Package_License: GPL
+          Package_Description: MIPS GCC toolchain for the N64
+          Package_Url: https://github.com/n64-tools/
+          Package_Maintainer: N64-Tool Contributers
+
+      - name: Publish Windows-x86_64 Build Artifact
+        if: ${{ matrix.target-platform == 'Windows-x86_64' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: gcc-toolchain-mips64-${{ matrix.target-platform }}
+          path: |
+            ${{ runner.temp }}/${{ env.Build_Directory }}
+        continue-on-error: true
+
+      - name: Publish Linux-x86_64 Build Artifacts
+        if: ${{ matrix.target-platform == 'Linux-x86_64' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: gcc-toolchain-mips64-${{ matrix.target-platform }}
+          path: |
+            ./**/*.deb
+            ./**/*.rpm
+        continue-on-error: true
+
+  release:
+    runs-on: ubuntu-latest
+#    if: github.event_name == 'release' && github.event.action == 'created'
+    needs: build-toolchain
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download Windows artifact
+        id: download-windows-artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: gcc-toolchain-mips64-Windows-x86_64
+          path: ${{ runner.temp }}/gcc-toolchain-mips64-Windows-x86_64
+
+      - name: Download Linux artifact
+        id: download-linux-artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: gcc-toolchain-mips64-Linux-x86_64
+          path: ${{ runner.temp }}/gcc-toolchain-mips64-Linux-x86_64
+
+      - name: Convert files for release upload
+        run: |
+          mv ${{ github.workspace }}/LICENSE ${{ github.workspace }}/LICENSE.txt
+          mv ${{ github.workspace }}/INSTALLATION.md ${{ github.workspace }}/INSTALLATION.txt
+
+      - name: Generate Changelog
+        run: |
+          CHANGELOG_TEXT="Latest GCC toolchain for the N64</br>"
+          CHANGELOG_TEXT+="Generated from libDragon.</br>"
+          CHANGELOG_TEXT+='</br>'
+          CHANGELOG_TEXT+='</br>'
+          CHANGELOG_TEXT+="Builds toolchain dependencies:</br>"
+          CHANGELOG_TEXT+="  * GCC:      V${{ needs.build-toolchain.outputs.gcc-version }}</br>"
+          CHANGELOG_TEXT+="  * Newlib:   V${{ needs.build-toolchain.outputs.newlib-version }}</br>"
+          CHANGELOG_TEXT+="  * BinUtils: V${{ needs.build-toolchain.outputs.binutils-version }}</br>"
+          CHANGELOG_TEXT+='</br>'
+          CHANGELOG_TEXT+="With dependencies:</br>"
+          CHANGELOG_TEXT+="  * GMP:      V${{ needs.build-toolchain.outputs.gmp-version }}</br>"
+          CHANGELOG_TEXT+="  * MPC:      V${{ needs.build-toolchain.outputs.mpc-version }}</br>"
+          CHANGELOG_TEXT+="  * MPFR:     V${{ needs.build-toolchain.outputs.mpfr-version }}</br>"
+          CHANGELOG_TEXT+='</br>'
+          CHANGELOG_TEXT+="Also generates Windows toolchain dependencies:</br>"
+          CHANGELOG_TEXT+="  * MAKEFILE: V${{ needs.build-toolchain.outputs.make-version }}</br>"
+          CHANGELOG_TEXT+='</br>'
+          echo "$CHANGELOG_TEXT" > ${{ github.workspace }}/CHANGELOG
+
+      # Compress and move the windows folder ready for upload.
+      - name: Compress and move windows artifacts
+        run: |
+          cd ${{ steps.download-windows-artifact.outputs.download-path }}
+          zip -r -q ${{ runner.temp }}/gcc-toolchain-mips64-win64.zip *
+
+# TODO: name and tag... ${{ github.run_id }} # TODO: ideally we would just overwrite the run id (nightly build) until ready for release.
+# TODO: should tag latest when generating release as well
+      - name: Generate Release
+        if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          prerelease: false
+          body_path: CHANGELOG
+          generate_release_notes: false
+          name: 'V${{ needs.build-toolchain.outputs.gcc-version }}-${{ github.run_id }}'
+          tag_name: 'V${{ needs.build-toolchain.outputs.gcc-version }}-${{ github.run_id }}' # TODO: how do we also mark this as latest!
+          files: |
+            ${{ runner.temp }}/**/*.deb
+            ${{ runner.temp }}/**/*.rpm
+            ${{ runner.temp }}/*.zip
+            LICENSE.txt
+            INSTALLATION.txt
+
+      - name: Generate Draft Pre-Release
+        if: github.event_name == 'pull_request' # TODO: when not a draft?!
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          prerelease: true
+          body_path: CHANGELOG
+          generate_release_notes: false
+          name: 'V${{ needs.build-toolchain.outputs.gcc-version }}-${{ github.run_id }}'
+          tag_name: "toolchain-continuous-prerelease"
+          files: |
+            ${{ runner.temp }}/**/*.deb
+            ${{ runner.temp }}/**/*.rpm
+            ${{ runner.temp }}/*.zip
+            LICENSE.txt
+            INSTALLATION.txt
