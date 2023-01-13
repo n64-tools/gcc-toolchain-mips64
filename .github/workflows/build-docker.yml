@@ -1,0 +1,63 @@
+# Copyright (c) NetworkFusion 2023
+# See LICENSE file in the project root for full license information.
+
+name: Build Docker Container
+
+env:
+  GCR_REGISTRY: ghcr.io
+  GCR_FILE: Dockerfile
+  GCC_VERSION: 0.0.0 # TODO: use GCC version collected from build-toolchain.sh
+  GCR_REVISION: 0 # TODO: use revision from updated from last version
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - '**Dockerfile'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Get gcc version from toolchain file
+      id: gcc-version-generator
+      run: |
+        curl https://raw.githubusercontent.com/DragonMinded/libdragon/trunk/tools/build-toolchain.sh -o "${{ runner.temp }}/build-toolchain.sh"
+        echo "GCC_VERSION=$(grep -Po 'GCC_V=\K[^"]*' ${{ runner.temp }}/build-toolchain.sh)" >> ${GITHUB_ENV}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ env.GCR_REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and Push test Docker Image
+      if: github.event_name == 'pull_request'
+      uses: docker/build-push-action@v3
+      with:
+        file: ${{ env.GCR_FILE }}
+        push: true # Will build and push (change to false to not push)
+        tags: |
+          ${{ env.GCR_REGISTRY }}/${{ github.repository }}:${{ env.GCC_VERSION }}-${{ github.run_id }}-test
+
+    - name: Build and Push Release Docker Image
+      if: startsWith(github.ref, 'refs/heads/master')
+      uses: docker/build-push-action@v3
+      with:
+        file: ${{ env.GCR_FILE }}
+        push: true # Will build and push
+        tags: |
+          ${{ env.GCR_REGISTRY }}/${{ github.repository }}:${{ env.GCC_VERSION }}-${{ env.GCR_REVISION }}
+          ${{ env.GCR_REGISTRY }}/${{ github.repository }}:latest

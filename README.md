@@ -1,20 +1,21 @@
-NOTE: This repo will be updated or deprecated in the near future as the libDragon toolchain now supports the ability to do the same thing using:
-```
-sudo apt-get install -y mingw-w64
-cd ./tools/
-sudo N64_INST=/usr/local/n64/ HOST=x86_64-w64-mingw32 ./build-toolchain.sh
-```
+# gcc-toolchain-mips64 for the N64
 
-# Windows mips64-gcc-toolchain for the N64
+**NOTE:** This repo uses the [official libDragon](dragonminded/libdragon) toolchain build script to generate its artifacts. However, it may also include features or abilities that have not yet been added (see below).
 
 This repo automatically generates the MIPS64 GCC toolchain to allow cross compilation for the N64. 
-The binaries can be downloaded and used as part of other build scripts/components which saves time (at least 30 minutes) when setting up a developer environment in order to build N64 libraries such as libdragon in a `Windows` environment.
+The binaries can be downloaded (from releases) and used as part of other build scripts/components which saves time (at least 30 minutes) when setting up a developer environment in order to build N64 libraries such as libdragon in a `Windows` environment (without using docker).
 
-[![Azure Pipeline CI](https://dev.azure.com/n64-tools/N64-Tools/_apis/build/status/N64-tools.mips64-gcc-toolchain)](https://dev.azure.com/n64-tools/N64-Tools/_build/latest?definitionId=1)
-
-[![Github Action CI](https://github.com/n64-tools/mips64-gcc-toolchain/actions/workflows/build-toolchain.yml/badge.svg)](https://github.com/n64-tools/mips64-gcc-toolchain/actions/workflows/build-toolchain.yml)
+[![Github Action CI](https://github.com/n64-tools/gcc-toolchain-mips64/actions/workflows/build-toolchain.yml/badge.svg)](https://github.com/n64-tools/gcc-toolchain-mips64/actions/workflows/build-toolchain.yml)
 
 Architecture | Download Links
 --- | ---
-Windows x64 | [Latest](https://github.com/n64-tools/mips64-gcc-toolchain/releases/latest/download/gcc-toolchain-mips64-win64.zip)
-Windows i386 | none currently available!
+Windows x86_x64 | [Latest](https://github.com/n64-tools/gcc-toolchain-mips64/releases/latest/download/gcc-toolchain-mips64-win64.zip)
+Debian | [Latest](https://github.com/n64-tools/gcc-toolchain-mips64/releases/latest/download/gcc-toolchain-mips64-linux64.deb)
+Redhat | [Latest](https://github.com/n64-tools/gcc-toolchain-mips64/releases/latest/download/gcc-toolchain-mips64-linux64.rpm)
+Docker | [Latest](https://github.com/n64-tools/gcc-toolchain-mips64/pkgs/container/gcc-toolchain-mips64)
+
+
+### Current Extra features:
+* The docker image includes CMake and Ninja Build.
+* There are debian and RPM packages available to download.
+* There is a Windows toolchain available to download.
