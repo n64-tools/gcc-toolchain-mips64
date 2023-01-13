@@ -26,9 +26,9 @@ ARG N64_INST=/n64_toolchain
 ENV N64_INST=${N64_INST}
 
 # Build
-COPY ./tools/build-toolchain.sh /tmp/tools/build-toolchain.sh
+ADD https://raw.githubusercontent.com/DragonMinded/libdragon/trunk/tools/build-toolchain.sh /tmp/tools/build-toolchain.sh
 WORKDIR /tmp/tools
-RUN ./build-toolchain.sh
+RUN chmod 755 "./build-toolchain.sh" && ./build-toolchain.sh
 
 # Remove locale strings which are not so important in our use case
 RUN rm -rf ${N64_INST}/share/locale/*
