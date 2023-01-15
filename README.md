@@ -10,8 +10,8 @@ The binaries can be downloaded (from releases) and used as part of other build s
 Architecture | Download Links
 --- | ---
 Windows x86_x64 | [Latest](https://github.com/n64-tools/gcc-toolchain-mips64/releases/latest/download/gcc-toolchain-mips64-win64.zip)
-Debian | [Latest](https://github.com/n64-tools/gcc-toolchain-mips64/releases/download/latest/gcc-toolchain-mips64-any.deb)
-Redhat | [Latest](https://github.com/n64-tools/gcc-toolchain-mips64/releases/download/latest/gcc-toolchain-mips64-x86_64.rpm)
+Debian x86_x64 | [Latest](https://github.com/n64-tools/gcc-toolchain-mips64/releases/download/latest/gcc-toolchain-mips64_n64-tools-x86_64.deb)
+Redhat x86_x64 | [Latest](https://github.com/n64-tools/gcc-toolchain-mips64/releases/download/latest/gcc-toolchain-mips64_n64-tools-x86_64.rpm)
 Docker | [Latest](https://github.com/n64-tools/gcc-toolchain-mips64/pkgs/container/gcc-toolchain-mips64)
 
 

@@ -1,7 +1,7 @@
-# Copyright (c) NetworkFusion 2023
+# Copyright (c) N64-Tools, NetworkFusion and contributers 2023
 # See LICENSE file in the project root for full license information.
 
-name: Build Docker Container
+name: Build N64 MIPS GCC toolchain Docker Container
 
 env:
   GCR_REGISTRY: ghcr.io

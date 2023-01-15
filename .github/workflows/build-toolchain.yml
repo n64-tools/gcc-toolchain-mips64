@@ -1,8 +1,8 @@
-# Copyright (c) NetworkFusion 2023
+# Copyright (c) N64-Tools, NetworkFusion and contributers 2023
 # See LICENSE file in the project root for full license information.
 
 # This workflow will build the libdragon N64 GCC toolchain to keep it up-to-date.
-name: Build latest libdragon N64 MIPS GCC toolchain
+name: Build N64 MIPS GCC toolchain for native environments
 
 on:
   # This action will take about 40-70 minutes to run!
@@ -36,7 +36,7 @@ jobs:
         ]
 
     env:
-      Build_Directory: gcc-toolchain-mips64
+      Build_Directory: gcc-toolchain-mips64_n64-tools
 
     steps:
       - name: Install native system build dependencies
@@ -128,11 +128,11 @@ jobs:
           fpm \
             -t deb \
             -s dir \
-            -p $Package_Name-any.deb \
+            -p $Package_Name-$Package_Architecture.deb \
             --name $Package_Name \
             --license $Package_License \
             --version $Package_Version.$Package_Revision \
-            --architecture all \
+            --architecture $Package_Architecture \
             --description "$Package_Description" \
             --url "$Package_Url" \
             --maintainer "$Package_Maintainer" \
@@ -144,11 +144,11 @@ jobs:
           fpm \
             -t rpm \
             -s dir \
-            -p $Package_Name-x86_64.rpm \
+            -p $Package_Name-$Package_Architecture.rpm \
             --name $Package_Name \
             --license $Package_License \
             --version $Package_Version.$Package_Revision \
-            --architecture x86_64 \
+            --architecture $Package_Architecture \
             --description "$Package_Description" \
             --url "$Package_Url" \
             --maintainer "$Package_Maintainer" \
@@ -161,6 +161,7 @@ jobs:
           Package_Name: ${{ env.Build_Directory }}
           Package_Version: ${{ steps.gcc-version-generator.outputs.GCC_VERSION }}
           Package_Revision: ${{ github.run_id }}
+          Package_Architecture: x86_64
           Package_License: GPL
           Package_Description: MIPS GCC toolchain for the N64
           Package_Url: https://github.com/n64-tools/
