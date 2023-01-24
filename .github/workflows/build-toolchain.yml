@@ -80,7 +80,6 @@ jobs:
       - name: Checkout Extra Code
         uses: actions/checkout@v3
         with:
-          repository: self
           fetch-depth: 1 # we only require the last check-in, unless we want to create a changelog.
           path: extras
 
