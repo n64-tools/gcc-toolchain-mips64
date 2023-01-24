@@ -77,6 +77,13 @@ jobs:
           repository: dragonminded/libdragon
           fetch-depth: 1 # we only require the last check-in, unless we want to create a changelog.
 
+      - name: Checkout Extra Code
+        uses: actions/checkout@v3
+        with:
+          repository: self
+          fetch-depth: 1 # we only require the last check-in, unless we want to create a changelog.
+          path: extras
+
       # Cache and restore dependencies instead of downloading them to increase build speed.
       # Expires after 7 days.
       - uses: actions/cache@v3
@@ -104,7 +111,7 @@ jobs:
       - name: Build Extras for ${{ matrix.target-platform }}
         run: |
           echo Building extras like GDB
-          cd ${{ github.workspace }}
+          cd ${{ github.workspace }}/extras
           ls -R
           chmod +x build-extras.sh
           # GDB_V=10.2 #12.1
