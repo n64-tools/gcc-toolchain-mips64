@@ -1,0 +1,73 @@
+# Copyright (c) N64-Tools, NetworkFusion and contributers 2023
+# See LICENSE file in the project root for full license information.
+
+name: Test Debian Package
+
+on:
+  workflow_call:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download package
+      run: |
+        # Download the generated package to the runner
+        echo "Downloading package..."
+        wget -O package.deb https://github.com/n64-tools/gcc-toolchain-mips64/releases/download/latest/gcc-toolchain-mips64_n64-tools-x86_64.deb
+    
+    # - name: Install package dry run
+    #   run: |
+    #     # Install the package
+    #     echo "Installing package dry run..."
+    #     sudo dpkg --dry-run -i package.deb
+
+    - name: Install package
+      run: |
+        # Install the package
+        echo "Installing package..."
+        sudo dpkg -i package.deb
+
+    - name: Debug environment variables
+      run: |
+        # ls /etc/profile.d/
+        # reload the user profile so we dont have to restart.
+        source /etc/profile.d/gcc-toolchain-mips64_n64-tools-env.sh
+        # echo "Checking environment vars..."
+        printenv
+        
+    # - name: Check dependencies
+    #   run: |
+    #     # Check the package's dependencies and ensure they are satisfied
+    #     echo "Checking dependencies..."
+    #     dpkg-checkbuilddeps
+
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 1 # Using a shallow checkout. Change to `0` if a full fetch is required.
+
+    - name: Run functional tests (build libdragon)
+      run: |
+        # Run functional tests
+        echo "Running functional tests..."
+        # FIXME: temp add a local environment variable, until we can get the global one to work. (debug test)
+        # probably an issue with the build.sh script!
+        export N64_INST=/opt/gcc-toolchain-mips64_n64-tools
+        # FIXME: currently get issues with install location permissions.
+        #./build.sh
+        make libdragon
+    
+    - name: Uninstall package
+      run: |
+        # Uninstall the package and check for any issues or leftovers
+        # FIXME: the package does not un-install!
+        echo "Uninstalling package..."
+        sudo dpkg -r gcc-toolchain-mips64_n64-tools
+    
+    # - name: Check results
+    #   run: |
+    #     # Check the results of the tests
+    #     echo "Checking results..."
+    #     grep "FAILED" test_results.txt
+    #     if [ $? -eq 0 ]; then exit 1; fi

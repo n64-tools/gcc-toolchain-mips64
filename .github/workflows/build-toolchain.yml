@@ -112,6 +112,13 @@ jobs:
           rm -rf ${N64_INST}/share/locale/*
         continue-on-error: true
 
+      - name: Build Extras for ${{ matrix.target-platform }}
+        run: |
+          echo Building extras like GDB
+          # GDB_V=10.2 #12.1
+          sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} GDB_V==10.2 ${{ github.workspace }}/build-extras.sh
+        continue-on-error: true
+
       # https://fpm.readthedocs.io/en/v1.15.0/getting-started.html
       # TODO: add --deb-changelog with versions (like we do in release)
       - name: Generate toolchain packages for Linux based OS
@@ -141,6 +148,7 @@ jobs:
             $Package_Name-env.sh=/etc/profile.d/$Package_Name-env.sh
 
           echo Generating rpm package
+          # It might be possible to convert using something like `fpm -s deb -t rpm $Package_Name.deb which could make things easier!
           fpm \
             -t rpm \
             -s dir \
@@ -166,6 +174,12 @@ jobs:
           Package_Description: MIPS GCC toolchain for the N64
           Package_Url: https://github.com/n64-tools/
           Package_Maintainer: N64-Tool Contributers
+
+      # - name: Test Debian package
+      #   if: ${{ matrix.target-platform == 'Linux-x86_64' }}
+      #   uses: ./.github/workflows/package-integratrion-tests-debian.yml
+      #    secrets:
+      #       token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish Windows-x86_64 Build Artifact
         if: ${{ matrix.target-platform == 'Windows-x86_64' }}
@@ -259,6 +273,7 @@ jobs:
             LICENSE.txt
             INSTALLATION.txt
 
+# TODO: this does not (currently) update the body of the release notes!
       - name: Generate latest Release
         if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
