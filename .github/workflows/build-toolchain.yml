@@ -8,10 +8,10 @@ on:
   # This action will take about 40-70 minutes to run!
   # TODO: Should actually do it on cron once a month (if not manually run).
   push:
-    branches:
-      - main
-      - master
-    pull_request:
+    # branches:
+    #   - main
+    #   - master
+    # pull_request:
     # workflow_dispatch:
   
 jobs:
