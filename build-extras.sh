@@ -89,13 +89,10 @@ if [ "$GDB_V" != "" ]; then
       --target=mips64-elf --with-arch=vr4300 \
       --build="$BUILD" \
       --host="$HOST" \
-      --disable-werror \
-      CFLAGS="" LDFLAGS=""
-
-
+      --disable-werror
 
     make -j "$JOBS"
-    make install|| sudo make install || su -c "make install"
+    make install || sudo make install || su -c "make install"
     popd
 fi
 
