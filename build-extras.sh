@@ -59,7 +59,6 @@ cd "$BUILD_PATH"
 # Dependency downloads and unpack
 test -f "gdb-$GDB_V.tar.gz"       || download "https://ftp.gnu.org/gnu/gdb/gdb-$GDB_V.tar.gz"
 test -d "gdb-$GDB_V"              || tar -xzf "gdb-$GDB_V.tar.gz"
-fi
 
 if [ "$HOST" == "" ]; then
     HOST="$BUILD"
