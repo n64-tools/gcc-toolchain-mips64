@@ -112,9 +112,10 @@ jobs:
           echo Building extras like GDB
           cd ${{ github.workspace }}/extras
           chmod +x build-extras.sh
-          # GDB_V=10.2 #12.1
-          sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} GDB_V=10.2 ./build-extras.sh
+          sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} GDB_V=${{ env.gdb_version }} ./build-extras.sh
         # continue-on-error: true
+        env:
+          gdb_version: 12.1
 
       - name: Build N64 MIPS GCC toolchain for ${{ matrix.target-platform }}
         run: |
