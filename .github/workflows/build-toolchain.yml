@@ -101,6 +101,13 @@ jobs:
           echo "MAKE_VERSION=4.4" >> $GITHUB_OUTPUT
         continue-on-error: false
 
+      - name: Build Extras for ${{ matrix.target-platform }}
+        run: |
+          echo Building extras like GDB
+          # GDB_V=10.2 #12.1
+          sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} GDB_V==10.2 ${{ github.workspace }}/build-extras.sh
+        continue-on-error: true
+
       - name: Build N64 MIPS GCC toolchain for ${{ matrix.target-platform }}
         run: |
           # required for newlib (as not the default?!)
@@ -110,13 +117,6 @@ jobs:
 
           echo Remove un-necessary content
           rm -rf ${N64_INST}/share/locale/*
-        continue-on-error: true
-
-      - name: Build Extras for ${{ matrix.target-platform }}
-        run: |
-          echo Building extras like GDB
-          # GDB_V=10.2 #12.1
-          sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} GDB_V==10.2 ${{ github.workspace }}/build-extras.sh
         continue-on-error: true
 
       # https://fpm.readthedocs.io/en/v1.15.0/getting-started.html
