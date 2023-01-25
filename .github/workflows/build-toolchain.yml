@@ -27,6 +27,7 @@ jobs:
       mpc-version: ${{ steps.gcc-version-generator.outputs.MPC_VERSION }}
       mpfr-version: ${{ steps.gcc-version-generator.outputs.MPFR_VERSION }}
       make-version: ${{ steps.gcc-version-generator.outputs.MAKE_VERSION }}
+      gdb-version: ${{ steps.gcc-version-generator.outputs.GDB_VERSION }}
     strategy:
       fail-fast: false
       matrix:
@@ -45,6 +46,7 @@ jobs:
           sudo apt-get install texinfo
           sudo apt-get install libmpc-dev
           sudo apt-get install squashfs-tools
+          sudo apt-get install libexpat1-dev
           # If there are other dependencies, we should add them here and make sure the documentation is updated!
         continue-on-error: true
 
@@ -103,8 +105,9 @@ jobs:
           echo "GMP_VERSION=$(grep -Po 'GMP_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
           echo "MPC_VERSION=$(grep -Po 'MPC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
           echo "MPFR_VERSION=$(grep -Po 'MPFR_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
-          # TODO: this version is set explicitly. We need to fix!
+          # TODO: these versions are set explicitly. We need to fix!
           echo "MAKE_VERSION=4.4" >> $GITHUB_OUTPUT
+          echo "GDB_VERSION=12.1" >> $GITHUB_OUTPUT
         continue-on-error: false
 
       - name: Build Extras for ${{ matrix.target-platform }}
@@ -254,6 +257,7 @@ jobs:
           CHANGELOG_TEXT+='</br>'
           CHANGELOG_TEXT+="Also generates Windows toolchain dependencies:</br>"
           CHANGELOG_TEXT+="  * MAKEFILE: V${{ needs.build-toolchain.outputs.make-version }}</br>"
+          CHANGELOG_TEXT+="  * GDB:      V${{ needs.build-toolchain.outputs.gdb-version }}</br>"
           CHANGELOG_TEXT+='</br>'
           echo "$CHANGELOG_TEXT" > ${{ github.workspace }}/CHANGELOG
 
