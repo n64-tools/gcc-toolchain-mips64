@@ -106,7 +106,7 @@ jobs:
           echo "MPFR_VERSION=$(grep -Po 'MPFR_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
           # TODO: these versions are set explicitly. We need to fix!
           echo "MAKE_VERSION=4.4" >> $GITHUB_OUTPUT
-          echo "GDB_VERSION=12.1" >> $GITHUB_OUTPUT
+          echo "GDB_VERSION=10.2" >> $GITHUB_OUTPUT
         continue-on-error: false
 
       - name: Build Extras for ${{ matrix.target-platform }}
@@ -117,7 +117,7 @@ jobs:
           sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} GDB_V=${{ env.gdb_version }} ./build-extras.sh
         # continue-on-error: true
         env:
-          gdb_version: 12.1
+          gdb_version: 10.2 # 12.1 requires further investigation due to GMP.
 
       - name: Build N64 MIPS GCC toolchain for ${{ matrix.target-platform }}
         run: |
