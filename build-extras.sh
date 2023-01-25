@@ -93,12 +93,14 @@ fi
 
 if [ "$GDB_V" != "" ]; then
     pushd "gdb-$GDB_V"
+    # 
     ./configure \
       --prefix="$INSTALL_PATH" \
       --target=mips64-elf --with-arch=vr4300 \
       --build="$BUILD" \
       --host="$HOST" \
-      --disable-werror
+      --disable-werror \
+      --static
 
     make -j "$JOBS"
     make install || sudo make install || su -c "make install"

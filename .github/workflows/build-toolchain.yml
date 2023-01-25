@@ -46,6 +46,7 @@ jobs:
           sudo apt-get install texinfo
           sudo apt-get install libmpc-dev
           sudo apt-get install squashfs-tools
+          sudo apt-get install libgmp-dev
           # If there are other dependencies, we should add them here and make sure the documentation is updated!
         continue-on-error: true
 
