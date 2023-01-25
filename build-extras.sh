@@ -34,6 +34,8 @@ JOBS="${JOBS:-1}" # If getconf returned nothing, default to 1
 # GCC configure arguments to use system GMP/MPC/MFPF
 GCC_CONFIGURE_ARGS=()
 
+# Dependency source libs (Versions)
+GMP_V=6.2.0 
 
 # Check if a command-line tool is available: status 0 means "yes"; status 1 means "no"
 command_exists () {
@@ -59,6 +61,14 @@ cd "$BUILD_PATH"
 # Dependency downloads and unpack
 test -f "gdb-$GDB_V.tar.gz"       || download "https://ftp.gnu.org/gnu/gdb/gdb-$GDB_V.tar.gz"
 test -d "gdb-$GDB_V"              || tar -xzf "gdb-$GDB_V.tar.gz"
+
+if [ "$GMP_V" != "" ]; then
+    test -f "gmp-$GMP_V.tar.xz"           || download "https://ftp.gnu.org/gnu/gmp/gmp-$GMP_V.tar.bz2"
+    test -d "gmp-$GMP_V"                  || tar -xf "gmp-$GMP_V.tar.bz2" # note: no .gz download file currently available
+    pushd "gdb-$GDB_V"
+    ln -sf ../"gmp-$GMP_V" "gmp"
+    popd
+fi
 
 if [ "$HOST" == "" ]; then
     HOST="$BUILD"
