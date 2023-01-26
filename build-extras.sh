@@ -100,7 +100,7 @@ if [ "$GDB_V" != "" ]; then
       --build="$BUILD" \
       --host="$HOST" \
       --disable-werror \
-      --static
+      LDFLAGS=-static
 
     make -j "$JOBS"
     make install || sudo make install || su -c "make install"
