@@ -94,10 +94,10 @@ if [ "$GDB_V" != "" ]; then
       --with-arch=vr4300 \
       --with-tune=vr4300 \
       --disable-shared \
-      LDFLAGS=-static
+      --enable-static
 
     make -j "$JOBS"
-    make install || sudo make install-strip || su -c "make install-strip"
+    make install-strip || sudo make install-strip || su -c "make install-strip"
     popd
 fi
 
