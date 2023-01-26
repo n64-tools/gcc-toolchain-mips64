@@ -92,8 +92,7 @@ if [ "$GDB_V" != "" ]; then
       --host="$HOST" \
       --target=mips64-elf \
       --with-cpu=mips64vr4300 \
-      --disable-shared \
-      --enable-static
+      LDFLAGS=-static
 
     make -j "$JOBS"
     make install || sudo make install || su -c "make install"
