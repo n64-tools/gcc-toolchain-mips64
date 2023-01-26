@@ -91,13 +91,12 @@ if [ "$GDB_V" != "" ]; then
       --build="$BUILD" \
       --host="$HOST" \
       --target=mips64-elf \
-      --with-arch=vr4300 \
-      --with-tune=vr4300 \
+      --with-cpu=mips64vr4300 \
       --disable-shared \
       --enable-static
 
     make -j "$JOBS"
-    make install-strip || sudo make install-strip || su -c "make install-strip"
+    make install || sudo make install || su -c "make install"
     popd
 fi
 

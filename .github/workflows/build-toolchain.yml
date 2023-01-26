@@ -116,6 +116,7 @@ jobs:
           cd ${{ github.workspace }}/extras
           chmod +x build-extras.sh
           sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} GDB_V=${{ env.gdb_version }} ./build-extras.sh
+          rm -rf ${{ runner.temp }}/${{ env.Build_Directory }}/share
         # continue-on-error: true
         env:
           gdb_version: 10.2 # 12.1 requires further investigation due to GMP.
