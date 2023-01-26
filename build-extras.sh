@@ -97,7 +97,7 @@ if [ "$GDB_V" != "" ]; then
       LDFLAGS=-static
 
     make -j "$JOBS"
-    make install || sudo make install || su -c "make install"
+    make install || sudo make install-strip || su -c "make install-strip"
     popd
 fi
 
