@@ -62,14 +62,6 @@ cd "$BUILD_PATH"
 test -f "gdb-$GDB_V.tar.gz"       || download "https://ftp.gnu.org/gnu/gdb/gdb-$GDB_V.tar.gz"
 test -d "gdb-$GDB_V"              || tar -xzf "gdb-$GDB_V.tar.gz"
 
-# if [ "$GMP_V" != "" ]; then
-#     test -f "gmp-$GMP_V.tar.xz"           || download "https://ftp.gnu.org/gnu/gmp/gmp-$GMP_V.tar.bz2"
-#     test -d "gmp-$GMP_V"                  || tar -xf "gmp-$GMP_V.tar.bz2" # note: no .gz download file currently available
-#     pushd "gdb-$GDB_V"
-#     ln -sf ../"gmp-$GMP_V" "gmp"
-#     popd
-# fi
-
 if [ "$HOST" == "" ]; then
     HOST="$BUILD"
 fi
@@ -96,10 +88,12 @@ if [ "$GDB_V" != "" ]; then
     # 
     ./configure \
       --prefix="$INSTALL_PATH" \
-      --target=mips64-elf --with-arch=vr4300 \
       --build="$BUILD" \
       --host="$HOST" \
-      --disable-werror \
+      --target=mips64-elf \
+      --with-arch=vr4300 \
+      --with-tune=vr4300 \
+      --disable-shared \
       LDFLAGS=-static
 
     make -j "$JOBS"
