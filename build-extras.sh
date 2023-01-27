@@ -66,7 +66,7 @@ test -d "gdb-$GDB_V"              || tar -xzf "gdb-$GDB_V.tar.gz"
 if [ "$GMP_V" != "" ]; then
     test -f "gmp-$GMP_V.tar.xz"           || download "https://ftp.gnu.org/gnu/gmp/gmp-$GMP_V.tar.bz2"
     test -d "gmp-$GMP_V"                  || tar -xf "gmp-$GMP_V.tar.bz2" # note: no .gz download file currently available
-    pushd "gdb-$GCC_V"
+    pushd "gdb-$GDB_V"
     ln -sf ../"gmp-$GMP_V" "gmp"
     popd
 fi
@@ -74,7 +74,7 @@ fi
 if [ "$EXPAT_V" != "" ]; then
     test -f "expat-$EXPAT_V.tar.xz"           || download "https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-$EXPAT_V.tar.gz"
     test -d "expat-$EXPAT_V"                  || tar -xf "expat-$EXPAT_V.tar.gz"
-    pushd "gdb-$EXPAT_V"
+    pushd "gdb-$GDB_V"
     ln -sf ../"expat-$EXPAT_V" "expat"
     popd
 fi
