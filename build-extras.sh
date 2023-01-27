@@ -44,6 +44,10 @@ command_exists () {
     return $?
 }
 
+# Create build path and enter it
+mkdir -p "$BUILD_PATH"
+cd "$BUILD_PATH"
+
 # Download the file URL using wget or curl (depending on which is installed)
 download () {
     if   command_exists wget ; then wget -c  "$1"
