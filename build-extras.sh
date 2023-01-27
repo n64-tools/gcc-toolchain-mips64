@@ -107,7 +107,7 @@ fi
 if [ "$GDB_V" != "" ]; then
     pushd "gdb-$GDB_V"
     # 
-    ./configure \
+    ./configure "${GCC_CONFIGURE_ARGS[@]}" \
       --prefix="$INSTALL_PATH" \
       --build="$BUILD" \
       --host="$HOST" \
