@@ -35,7 +35,7 @@ JOBS="${JOBS:-1}" # If getconf returned nothing, default to 1
 GCC_CONFIGURE_ARGS=()
 
 # Dependency source libs (Versions)
-# GMP_V=6.2.0
+GMP_V=6.2.1
 EXPAT_V=2.5.0
 
 # Check if a command-line tool is available: status 0 means "yes"; status 1 means "no"
@@ -63,16 +63,16 @@ cd "$BUILD_PATH"
 test -f "gdb-$GDB_V.tar.gz"           || download "https://ftp.gnu.org/gnu/gdb/gdb-$GDB_V.tar.gz"
 test -d "gdb-$GDB_V"                  || tar -xzf "gdb-$GDB_V.tar.gz"
 
-# if [ "$GMP_V" != "" ]; then
-#     test -f "gmp-$GMP_V.tar.xz"       || download "https://ftp.gnu.org/gnu/gmp/gmp-$GMP_V.tar.bz2"
-#     test -d "gmp-$GMP_V"              || tar -xf "gmp-$GMP_V.tar.bz2" # note: no .gz download file currently available
-#     pushd "gdb-$GDB_V"
-#     ln -sf ../"gmp-$GMP_V" "gmp"
-#     popd
-# fi
+if [ "$GMP_V" != "" ]; then
+    test -f "gmp-$GMP_V.tar.bz2"      || download "https://ftp.gnu.org/gnu/gmp/gmp-$GMP_V.tar.bz2"
+    test -d "gmp-$GMP_V"              || tar -xf "gmp-$GMP_V.tar.bz2" # note: no .gz download file currently available
+    pushd "gdb-$GDB_V"
+    ln -sf ../"gmp-$GMP_V" "gmp"
+    popd
+fi
 
 if [ "$EXPAT_V" != "" ]; then
-    test -f "expat-$EXPAT_V.tar.xz"   || download "https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-$EXPAT_V.tar.gz"
+    test -f "expat-$EXPAT_V.tar.gz"   || download "https://github.com/libexpat/libexpat/releases/download/R_2_5_0/expat-$EXPAT_V.tar.gz"
     test -d "expat-$EXPAT_V"          || tar -xf "expat-$EXPAT_V.tar.gz"
     pushd "gdb-$GDB_V"
     ln -sf ../"expat-$EXPAT_V" "expat"
