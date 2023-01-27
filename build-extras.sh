@@ -36,7 +36,7 @@ GCC_CONFIGURE_ARGS=()
 
 # Dependency source libs (Versions)
 GMP_V=6.2.0
-EXPAT=2.5.0
+EXPAT_V=2.5.0
 
 # Check if a command-line tool is available: status 0 means "yes"; status 1 means "no"
 command_exists () {
