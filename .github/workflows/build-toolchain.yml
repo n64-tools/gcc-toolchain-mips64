@@ -11,8 +11,8 @@ on:
     branches:
       - main
       - master
-    pull_request:
-    workflow_dispatch:
+  pull_request:
+  workflow_dispatch:
   
 jobs:
   build-toolchain:
@@ -27,6 +27,7 @@ jobs:
       mpc-version: ${{ steps.gcc-version-generator.outputs.MPC_VERSION }}
       mpfr-version: ${{ steps.gcc-version-generator.outputs.MPFR_VERSION }}
       make-version: ${{ steps.gcc-version-generator.outputs.MAKE_VERSION }}
+      gdb-version: ${{ steps.gcc-version-generator.outputs.GDB_VERSION }}
     strategy:
       fail-fast: false
       matrix:
@@ -45,6 +46,7 @@ jobs:
           sudo apt-get install texinfo
           sudo apt-get install libmpc-dev
           sudo apt-get install squashfs-tools
+          sudo apt-get install libgmp-dev
           # If there are other dependencies, we should add them here and make sure the documentation is updated!
         continue-on-error: true
 
@@ -52,6 +54,7 @@ jobs:
         if: ${{ matrix.target-platform == 'Windows-x86_64' }}
         run: |
           sudo apt-get install -y mingw-w64
+          sudo apt-get install -y libz-mingw-w64-dev
           # If there are other dependencies, we should add them here and make sure the documentation is updated!
 
       # https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-ruby
@@ -77,6 +80,12 @@ jobs:
           repository: dragonminded/libdragon
           fetch-depth: 1 # we only require the last check-in, unless we want to create a changelog.
 
+      - name: Checkout Extra Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1 # we only require the last check-in, unless we want to create a changelog.
+          path: extras
+
       # Cache and restore dependencies instead of downloading them to increase build speed.
       # Expires after 7 days.
       - uses: actions/cache@v3
@@ -97,20 +106,32 @@ jobs:
           echo "GMP_VERSION=$(grep -Po 'GMP_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
           echo "MPC_VERSION=$(grep -Po 'MPC_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
           echo "MPFR_VERSION=$(grep -Po 'MPFR_V=\K[^"]*' ./tools/build-toolchain.sh)" >> $GITHUB_OUTPUT
-          # TODO: this version is set explicitly. We need to fix!
+          # TODO: these versions are set explicitly. We need to fix!
           echo "MAKE_VERSION=4.4" >> $GITHUB_OUTPUT
+          echo "GDB_VERSION=10.2" >> $GITHUB_OUTPUT
         continue-on-error: false
 
-      - name: Build N64 MIPS GCC toolchain for ${{ matrix.target-platform }}
+      - name: Build Extras for ${{ matrix.target-platform }}
         run: |
-          # required for newlib (as not the default?!)
-          export PATH="$PATH:${{ runner.temp }}/${{ env.Build_Directory }}"
-          cd ./tools/
-          sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} MAKE_V=${{ matrix.makefile-version }} ./build-toolchain.sh
+          echo Building extras like GDB
+          cd ${{ github.workspace }}/extras
+          chmod +x build-extras.sh
+          sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} GDB_V=${{ env.gdb_version }} ./build-extras.sh
+          sudo rm -rf ${{ runner.temp }}/${{ env.Build_Directory }}/share
+        # continue-on-error: true
+        env:
+          gdb_version: 10.2 # 12.1 requires further investigation due to GMP.
 
-          echo Remove un-necessary content
-          rm -rf ${N64_INST}/share/locale/*
-        continue-on-error: true
+      # - name: Build N64 MIPS GCC toolchain for ${{ matrix.target-platform }}
+      #   run: |
+      #     # required for newlib (as not the default?!)
+      #     export PATH="$PATH:${{ runner.temp }}/${{ env.Build_Directory }}"
+      #     cd ./tools/
+      #     sudo N64_INST=${{ runner.temp }}/${{ env.Build_Directory }} HOST=${{ matrix.host }} MAKE_V=${{ matrix.makefile-version }} ./build-toolchain.sh
+
+      #     echo Remove un-necessary content
+      #     rm -rf ${N64_INST}/share/locale/*
+      #   continue-on-error: true
 
       # https://fpm.readthedocs.io/en/v1.15.0/getting-started.html
       # TODO: add --deb-changelog with versions (like we do in release)
@@ -141,6 +162,7 @@ jobs:
             $Package_Name-env.sh=/etc/profile.d/$Package_Name-env.sh
 
           echo Generating rpm package
+          # It might be possible to convert using something like `fpm -s deb -t rpm $Package_Name.deb which could make things easier!
           fpm \
             -t rpm \
             -s dir \
@@ -166,6 +188,12 @@ jobs:
           Package_Description: MIPS GCC toolchain for the N64
           Package_Url: https://github.com/n64-tools/
           Package_Maintainer: N64-Tool Contributers
+
+      # - name: Test Debian package
+      #   if: ${{ matrix.target-platform == 'Linux-x86_64' }}
+      #   uses: ./.github/workflows/package-integratrion-tests-debian.yml
+      #    secrets:
+      #       token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish Windows-x86_64 Build Artifact
         if: ${{ matrix.target-platform == 'Windows-x86_64' }}
@@ -231,6 +259,7 @@ jobs:
           CHANGELOG_TEXT+='</br>'
           CHANGELOG_TEXT+="Also generates Windows toolchain dependencies:</br>"
           CHANGELOG_TEXT+="  * MAKEFILE: V${{ needs.build-toolchain.outputs.make-version }}</br>"
+          CHANGELOG_TEXT+="  * GDB:      V${{ needs.build-toolchain.outputs.gdb-version }}</br>"
           CHANGELOG_TEXT+='</br>'
           echo "$CHANGELOG_TEXT" > ${{ github.workspace }}/CHANGELOG
 
@@ -259,6 +288,7 @@ jobs:
             LICENSE.txt
             INSTALLATION.txt
 
+# TODO: this does not (currently) update the body of the release notes!
       - name: Generate latest Release
         if: startsWith(github.ref, 'refs/heads/master') # Actually, should we only do it on a tag?! if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
