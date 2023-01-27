@@ -31,12 +31,6 @@ export PATH="$PATH:$INSTALL_PATH/bin"
 JOBS="${JOBS:-$(getconf _NPROCESSORS_ONLN)}"
 JOBS="${JOBS:-1}" # If getconf returned nothing, default to 1
 
-# GCC configure arguments to use system GMP/MPC/MFPF
-GCC_CONFIGURE_ARGS=()
-
-# Dependency source libs (Versions)
-# GMP_V=6.2.0 
-
 # Check if a command-line tool is available: status 0 means "yes"; status 1 means "no"
 command_exists () {
     (command -v "$1" >/dev/null 2>&1)
