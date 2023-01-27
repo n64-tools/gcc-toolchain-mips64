@@ -31,9 +31,6 @@ export PATH="$PATH:$INSTALL_PATH/bin"
 JOBS="${JOBS:-$(getconf _NPROCESSORS_ONLN)}"
 JOBS="${JOBS:-1}" # If getconf returned nothing, default to 1
 
-# GCC configure arguments to use system GMP/MPC/MFPF
-GCC_CONFIGURE_ARGS=()
-
 # Dependency source libs (Versions)
 GMP_V=6.2.1
 EXPAT_V=2.5.0
@@ -107,12 +104,14 @@ fi
 if [ "$GDB_V" != "" ]; then
     pushd "gdb-$GDB_V"
     # 
-    ./configure "${GCC_CONFIGURE_ARGS[@]}" \
+    ./configure \
       --prefix="$INSTALL_PATH" \
       --build="$BUILD" \
       --host="$HOST" \
       --target=mips64-elf \
       --with-cpu=mips64vr4300 \
+      --disable-werror \
+      --with-system-zlib
       LDFLAGS=-static
 
     make -j "$JOBS"
